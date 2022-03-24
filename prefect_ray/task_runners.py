@@ -8,7 +8,7 @@ from prefect.futures import PrefectFuture
 from prefect.orion.schemas.core import TaskRun
 from prefect.orion.schemas.states import State
 from prefect.states import exception_to_crashed_state
-from prefect.task_runners import BaseTaskRunner
+from prefect.task_runners import BaseTaskRunner, R
 from prefect.utilities.asyncio import A, sync_compatible
 
 

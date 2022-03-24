@@ -6,12 +6,11 @@ import ray
 import ray.cluster_utils
 
 
-import tests  # Import the current tests directory to send to ray workers
 from prefect_ray import RayTaskRunner
+from prefect.utilities.testing import TaskRunnerTests
 
 
 @pytest.fixture(scope="module")
-@pytest.mark.service("ray")
 def machine_ray_instance():
     """
     Starts a ray instance for the current machine
@@ -27,11 +26,8 @@ def machine_ray_instance():
 
 
 @pytest.fixture
-@pytest.mark.service("ray")
 def ray_task_runner_with_existing_cluster(
-    machine_ray_instance,
-    use_hosted_orion,
-    hosted_orion_api,
+    machine_ray_instance, use_hosted_orion, hosted_orion_api
 ):
     """
     Generate a ray task runner that's connected to a ray instance running in a separate
@@ -43,16 +39,15 @@ def ray_task_runner_with_existing_cluster(
         address=machine_ray_instance,
         init_kwargs={
             "runtime_env": {
-                # Ship the 'tests' module to the workers or they will not be able to
+                # Ship the 'prefect' module to the workers or they will not be able to
                 # deserialize test tasks / flows
-                "py_modules": [tests]
+                "py_modules": [prefect]
             }
         },
     )
 
 
 @pytest.fixture(scope="module")
-@pytest.mark.service("ray")
 def inprocess_ray_cluster():
     """
     Starts a ray cluster in-process
@@ -66,11 +61,8 @@ def inprocess_ray_cluster():
 
 
 @pytest.fixture
-@pytest.mark.service("ray")
 def ray_task_runner_with_inprocess_cluster(
-    inprocess_ray_cluster,
-    use_hosted_orion,
-    hosted_orion_api,
+    inprocess_ray_cluster, use_hosted_orion, hosted_orion_api
 ):
     """
     Generate a ray task runner that's connected to an in-process cluster.
@@ -82,9 +74,42 @@ def ray_task_runner_with_inprocess_cluster(
         address=inprocess_ray_cluster.address,
         init_kwargs={
             "runtime_env": {
-                # Ship the 'tests' module to the workers or they will not be able to
+                # Ship the 'prefect' module to the workers or they will not be able to
                 # deserialize test tasks / flows
-                "py_modules": [tests]
+                "py_modules": [prefect]
             }
         },
     )
+
+
+@pytest.fixture
+def ray_task_runner_with_temporary_cluster(use_hosted_orion, hosted_orion_api):
+    """
+    Generate a ray task runner that creates a temporary cluster.
+
+    This tests connection via 'localhost' which is not a client-based connection.
+    """
+
+    yield RayTaskRunner(
+        init_kwargs={
+            "runtime_env": {
+                # Ship the 'prefect' module to the workers or they will not be able to
+                # deserialize test tasks / flows
+                "py_modules": [prefect]
+            }
+        },
+    )
+
+
+class TestRayTaskRunner(TaskRunnerTests):
+    @pytest.fixture(
+        params=[
+            ray_task_runner_with_temporary_cluster,
+            ray_task_runner_with_inprocess_cluster,
+            ray_task_runner_with_existing_cluster,
+        ]
+    )
+    def task_runner(self, request):
+        yield request.getfixturevalue(
+            request.param._pytestfixturefunction.name or request.param.__name__
+        )
