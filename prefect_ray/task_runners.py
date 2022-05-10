@@ -10,29 +10,24 @@ from prefect.orion.schemas.states import State
 from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R
 from prefect.utilities.asyncio import A, sync_compatible
+from prefect.task_runners import TaskConcurrencyType
 
 
 class RayTaskRunner(BaseTaskRunner):
     """
     A parallel task_runner that submits tasks to `ray`.
-
     By default, a temporary Ray cluster is created for the duration of the flow run.
-
     Alternatively, if you already have a `ray` instance running, you can provide
     the connection URL via the `address` kwarg.
-
     Args:
         address (string, optional): Address of a currently running `ray` instance; if
             one is not provided, a temporary instance will be created.
         init_kwargs (dict, optional): Additional kwargs to use when calling `ray.init`.
-
     Examples:
-
         Using a temporary local ray cluster:
         >>> from prefect import flow
         >>> from prefect.task_runners import RayTaskRunner
         >>> @flow(task_runner=RayTaskRunner)
-
         Connecting to an existing ray instance:
         >>> RayTaskRunner(address="ray://192.0.2.255:8786")
     """
@@ -53,6 +48,10 @@ class RayTaskRunner(BaseTaskRunner):
         self._ray_refs: Dict[UUID, "ray.ObjectRef"] = {}
 
         super().__init__()
+
+    @property
+    def concurrency_type(self) -> TaskConcurrencyType:
+        return TaskConcurrencyType.PARALLEL
 
     async def submit(
         self,
@@ -115,7 +114,6 @@ class RayTaskRunner(BaseTaskRunner):
     async def _start(self, exit_stack: AsyncExitStack):
         """
         Start the task runner and prep for context exit.
-
         - Creates a cluster if an external address is not set.
         - Creates a client to connect to the cluster.
         - Pushes a call to wait for all running futures to complete on exit.
