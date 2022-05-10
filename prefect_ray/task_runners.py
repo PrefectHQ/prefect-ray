@@ -114,6 +114,7 @@ class RayTaskRunner(BaseTaskRunner):
     async def _start(self, exit_stack: AsyncExitStack):
         """
         Start the task runner and prep for context exit.
+
         - Creates a cluster if an external address is not set.
         - Creates a client to connect to the cluster.
         - Pushes a call to wait for all running futures to complete on exit.
@@ -127,22 +128,23 @@ class RayTaskRunner(BaseTaskRunner):
             self.logger.info("Creating a local Ray instance")
             init_args = ()
 
-        # When connecting to an out-of-process cluster (e.g. ray://ip) this returns a
-        # `ClientContext` otherwise it returns a `dict`.
+        # In ray < 1.11.0, connecting to an out-of-process cluster (e.g. ray://ip)
+        # returns a `ClientContext` otherwise it returns a `dict`.
+        # In ray >= 1.11.0, a context is always returned.
         context_or_metadata = self._ray.init(*init_args, **self.init_kwargs)
-        if isinstance(context_or_metadata, dict):
-            metadata = context_or_metadata
-            context = None
-        else:
-            metadata = None  # TODO: Some of this may be retrievable from the client ctx
+        if hasattr(context_or_metadata, "__enter__"):
             context = context_or_metadata
+            metadata = getattr(context, "address_info", {})
+            dashboard_url = getattr(context, "dashboard_url", None)
+        else:
+            context = None
+            metadata = context_or_metadata
+            dashboard_url = metadata.get("webui_url")
 
-        # Shutdown differs depending on the connection type
         if context:
-            # Just disconnect the client
             exit_stack.push(context)
         else:
-            # Shutdown ray
+            # If not given a context, call shutdown manually at exit
             exit_stack.push_async_callback(self._shutdown_ray)
 
         # Display some information about the cluster
@@ -150,9 +152,9 @@ class RayTaskRunner(BaseTaskRunner):
         living_nodes = [node for node in nodes if node.get("alive")]
         self.logger.info(f"Using Ray cluster with {len(living_nodes)} nodes.")
 
-        if metadata and metadata.get("webui_url"):
+        if dashboard_url:
             self.logger.info(
-                f"The Ray UI is available at {metadata['webui_url']}",
+                f"The Ray UI is available at {dashboard_url}",
             )
 
     async def _shutdown_ray(self):
