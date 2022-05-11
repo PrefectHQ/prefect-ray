@@ -26,7 +26,7 @@ Example:
 
     Switching to a `RayTaskRunner`:
     >>> from prefect.task_runners import RayTaskRunner
-    >>> flow.task_runner = DaskTaskRunner()
+    >>> flow.task_runner = RayTaskRunner()
     >>> greetings(["arthur", "trillian", "ford", "marvin"])
     hello arthur
     goodbye arthur
