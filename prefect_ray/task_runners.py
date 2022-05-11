@@ -1,3 +1,45 @@
+"""
+Interface and implementations of the Ray Task Runner.
+[Task Runners](/concepts/task-runners/) in Prefect are
+responsible for managing the execution of Prefect task runs.
+Generally speaking, users are not expected to interact with
+task runners outside of configuring and initializing them for a flow.
+
+Example:
+    >>> from prefect import flow, task
+    >>> from prefect.task_runners import SequentialTaskRunner
+    >>> from typing import List
+    >>>
+    >>> @task
+    >>> def say_hello(name):
+    ...     print(f"hello {name}")
+    >>>
+    >>> @task
+    >>> def say_goodbye(name):
+    ...     print(f"goodbye {name}")
+    >>>
+    >>> @flow(task_runner=SequentialTaskRunner())
+    >>> def greetings(names: List[str]):
+    ...     for name in names:
+    ...         say_hello(name)
+    ...         say_goodbye(name)
+
+    Switching to a `RayTaskRunner`:
+    >>> from prefect.task_runners import RayTaskRunner
+    >>> flow.task_runner = DaskTaskRunner()
+    >>> greetings(["arthur", "trillian", "ford", "marvin"])
+    hello arthur
+    goodbye arthur
+    hello trillian
+    hello ford
+    goodbye marvin
+    hello marvin
+    goodbye ford
+    goodbye trillian
+
+For usage details, see the [Task Runners](/concepts/task-runners/) documentation.
+"""
+
 from contextlib import AsyncExitStack
 from typing import Any, Awaitable, Callable, Dict, Optional
 from uuid import UUID
@@ -8,9 +50,8 @@ from prefect.futures import PrefectFuture
 from prefect.orion.schemas.core import TaskRun
 from prefect.orion.schemas.states import State
 from prefect.states import exception_to_crashed_state
-from prefect.task_runners import BaseTaskRunner, R
+from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
 from prefect.utilities.asyncio import A, sync_compatible
-from prefect.task_runners import TaskConcurrencyType
 
 
 class RayTaskRunner(BaseTaskRunner):
@@ -37,6 +78,9 @@ class RayTaskRunner(BaseTaskRunner):
         address: str = None,
         init_kwargs: dict = None,
     ):
+        """
+        Initialize keywords.
+        """
         # Store settings
         self.address = address
         self.init_kwargs = init_kwargs.copy() if init_kwargs else {}
@@ -51,6 +95,9 @@ class RayTaskRunner(BaseTaskRunner):
 
     @property
     def concurrency_type(self) -> TaskConcurrencyType:
+        """
+        Set the concurrency type; parallel for Ray.
+        """
         return TaskConcurrencyType.PARALLEL
 
     async def submit(
@@ -60,6 +107,9 @@ class RayTaskRunner(BaseTaskRunner):
         run_kwargs: Dict[str, Any],
         asynchronous: A = True,
     ) -> PrefectFuture[R, A]:
+        """
+        Submit task.
+        """
         if not self._started:
             raise RuntimeError(
                 "The task runner must be started before submitting work."
@@ -79,6 +129,9 @@ class RayTaskRunner(BaseTaskRunner):
         prefect_future: PrefectFuture,
         timeout: float = None,
     ) -> Optional[State]:
+        """
+        Wait for task to complete.
+        """
         ref = self._get_ray_ref(prefect_future)
 
         result = None
@@ -158,6 +211,9 @@ class RayTaskRunner(BaseTaskRunner):
             )
 
     async def _shutdown_ray(self):
+        """
+        Shuts down the cluster.
+        """
         self.logger.debug("Shutting down Ray cluster...")
         self._ray.shutdown()
 
