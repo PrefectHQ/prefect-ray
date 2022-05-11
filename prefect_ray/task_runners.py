@@ -36,8 +36,6 @@ Example:
     hello marvin
     goodbye ford
     goodbye trillian
-
-For usage details, see the [Task Runners](/concepts/task-runners/) documentation.
 """
 
 from contextlib import AsyncExitStack

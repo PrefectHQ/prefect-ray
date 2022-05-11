@@ -25,19 +25,25 @@ pip install prefect-ray
 ### Write and run a flow
 
 ```python
-from prefect import flow
-from prefect_ray.tasks import (
-    goodbye_prefect_ray,
-    hello_prefect_ray,
-)
+from prefect import flow, task
+from prefect.task_runners import RayTaskRunner
 
+@task
+def say_hello(name):
+    print(f"hello {name}")
 
-@flow
-def example_flow():
-    hello_prefect_ray
-    goodbye_prefect_ray
+@task
+def say_goodbye(name):
+    print(f"goodbye {name}")
 
-example_flow()
+@flow(task_runner=RayTaskRunner())
+def greetings(names):
+    for name in names:
+        say_hello(name)
+        say_goodbye(name)
+
+if __name__ == "__main__":
+    greetings(["arthur", "trillian", "ford", "marvin"])
 ```
 
 ## Resources
