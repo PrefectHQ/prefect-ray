@@ -40,7 +40,6 @@ def machine_ray_instance():
 
 
 @pytest.fixture
-@pytest.mark.service("ray")
 def default_ray_task_runner():
     with warnings.catch_warnings():
         # Ray does not properly close resources and we do not want their warnings to
