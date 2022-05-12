@@ -4,38 +4,6 @@ Interface and implementations of the Ray Task Runner.
 responsible for managing the execution of Prefect task runs.
 Generally speaking, users are not expected to interact with
 task runners outside of configuring and initializing them for a flow.
-
-Example:
-    >>> from prefect import flow, task
-    >>> from prefect.task_runners import SequentialTaskRunner
-    >>> from typing import List
-    >>>
-    >>> @task
-    >>> def say_hello(name):
-    ...     print(f"hello {name}")
-    >>>
-    >>> @task
-    >>> def say_goodbye(name):
-    ...     print(f"goodbye {name}")
-    >>>
-    >>> @flow(task_runner=SequentialTaskRunner())
-    >>> def greetings(names: List[str]):
-    ...     for name in names:
-    ...         say_hello(name)
-    ...         say_goodbye(name)
-
-    Switching to a `RayTaskRunner`:
-    >>> from prefect.task_runners import RayTaskRunner
-    >>> flow.task_runner = DaskTaskRunner()
-    >>> greetings(["arthur", "trillian", "ford", "marvin"])
-    hello arthur
-    goodbye arthur
-    hello trillian
-    hello ford
-    goodbye marvin
-    hello marvin
-    goodbye ford
-    goodbye trillian
 """
 
 from contextlib import AsyncExitStack
