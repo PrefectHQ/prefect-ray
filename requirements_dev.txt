@@ -12,5 +12,3 @@ mock; python_version < '3.8'
 mkdocs-gen-files
 interrogate
 coverage
-orion @ git+https://github.com/PrefectHQ/orion.git
-
