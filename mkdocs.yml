@@ -31,10 +31,8 @@ plugins:
             heading_level: 1
       watch:
         - prefect_ray/
-        - README.md
 
 nav:
     - Home: index.md
-    - Tasks: tasks.md
-    - Flows: flows.md
+    - Task Runners: task_runners.md
 
