@@ -1,9 +1,21 @@
 site_name: prefect-ray
+site_url: https://prefecthq.github.io/prefect-ray/
+repo_url: https://github.com/PrefectHQ/prefect-ray
+edit_uri: /edit/main/docs/
 theme:
   name: material
+  favicon: img/favicon.ico
   palette:
     primary: blue
     accent: blue
+  icon:
+      repo: fontawesome/brands/github
+  logo: img/prefect-logo-white.png
+  font:
+    text: Inter
+    code: Source Code Pro
+extra_css:
+    - stylesheets/extra.css
 markdown_extensions:
     - admonition
     - attr_list
@@ -35,6 +47,5 @@ plugins:
 
 nav:
     - Home: index.md
-    - Tasks: tasks.md
-    - Flows: flows.md
+    - Task Runners: task_runners.md
 
