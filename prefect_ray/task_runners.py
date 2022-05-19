@@ -144,24 +144,6 @@ class RayTaskRunner(BaseTaskRunner):
 
         return result
 
-    @property
-    def _ray(self) -> "ray":
-        """
-        Delayed import of `ray` allowing configuration of the task runner
-        without the extra installed and improves `prefect` import times.
-        """
-        global ray
-
-        if ray is None:
-            try:
-                import ray
-            except ImportError as exc:
-                raise RuntimeError(
-                    "Using the `RayTaskRunner` requires `ray` to be installed."
-                ) from exc
-
-        return ray
-
     async def _start(self, exit_stack: AsyncExitStack):
         """
         Start the task runner and prep for context exit.
@@ -182,7 +164,7 @@ class RayTaskRunner(BaseTaskRunner):
         # In ray < 1.11.0, connecting to an out-of-process cluster (e.g. ray://ip)
         # returns a `ClientContext` otherwise it returns a `dict`.
         # In ray >= 1.11.0, a context is always returned.
-        context_or_metadata = self._ray.init(*init_args, **self.init_kwargs)
+        context_or_metadata = ray.init(*init_args, **self.init_kwargs)
         if hasattr(context_or_metadata, "__enter__"):
             context = context_or_metadata
             metadata = getattr(context, "address_info", {})
@@ -213,7 +195,7 @@ class RayTaskRunner(BaseTaskRunner):
         Shuts down the cluster.
         """
         self.logger.debug("Shutting down Ray cluster...")
-        self._ray.shutdown()
+        ray.shutdown()
 
     def _get_ray_ref(self, prefect_future: PrefectFuture) -> "ray.ObjectRef":
         """
