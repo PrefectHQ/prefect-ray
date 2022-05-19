@@ -161,24 +161,9 @@ class RayTaskRunner(BaseTaskRunner):
             self.logger.info("Creating a local Ray instance")
             init_args = ()
 
-        # In ray < 1.11.0, connecting to an out-of-process cluster (e.g. ray://ip)
-        # returns a `ClientContext` otherwise it returns a `dict`.
-        # In ray >= 1.11.0, a context is always returned.
-        context_or_metadata = ray.init(*init_args, **self.init_kwargs)
-        if hasattr(context_or_metadata, "__enter__"):
-            context = context_or_metadata
-            metadata = getattr(context, "address_info", {})
-            dashboard_url = getattr(context, "dashboard_url", None)
-        else:
-            context = None
-            metadata = context_or_metadata
-            dashboard_url = metadata.get("webui_url")
-
-        if context:
-            exit_stack.push(context)
-        else:
-            # If not given a context, call shutdown manually at exit
-            exit_stack.push_async_callback(self._shutdown_ray)
+        context = ray.init(*init_args, **self.init_kwargs)
+        dashboard_url = getattr(context, "dashboard_url", None)
+        exit_stack.push(context)
 
         # Display some information about the cluster
         nodes = ray.nodes()
