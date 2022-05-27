@@ -183,10 +183,6 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         """
         return 5.0
 
-    # Ray wraps the exception, interrupts will result in "Cancelled" tasks
-    # or "Killed" workers while normal errors will result in a "RayTaskError".
-    # We care more about the crash detection and
-    # lack of re-raise here than the equality of the exception.
     @pytest.mark.parametrize("exception", [KeyboardInterrupt(), ValueError("test")])
     async def test_wait_captures_exceptions_as_crashed_state(
         self, task_runner, exception
@@ -197,10 +193,6 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         We care more about the crash detection and
         lack of re-raise here than the equality of the exception.
         """
-        if task_runner.concurrency_type != TaskConcurrencyType.PARALLEL:
-            pytest.skip(
-                f"This will raise for {task_runner.concurrency_type} task runners."
-            )
 
         task_run = TaskRun(flow_run_id=uuid4(), task_key="foo", dynamic_key="bar")
 

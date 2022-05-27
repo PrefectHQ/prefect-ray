@@ -76,9 +76,6 @@ class RayTaskRunner(BaseTaskRunner):
         address: str = None,
         init_kwargs: dict = None,
     ):
-        """
-        Initialize keywords.
-        """
         # Store settings
         self.address = address
         self.init_kwargs = init_kwargs.copy() if init_kwargs else {}
@@ -93,9 +90,6 @@ class RayTaskRunner(BaseTaskRunner):
 
     @property
     def concurrency_type(self) -> TaskConcurrencyType:
-        """
-        Set the concurrency type; parallel for Ray.
-        """
         return TaskConcurrencyType.PARALLEL
 
     async def submit(
@@ -105,9 +99,6 @@ class RayTaskRunner(BaseTaskRunner):
         run_kwargs: Dict[str, Any],
         asynchronous: A = True,
     ) -> PrefectFuture[R, A]:
-        """
-        Submit task.
-        """
         if not self._started:
             raise RuntimeError(
                 "The task runner must be started before submitting work."
