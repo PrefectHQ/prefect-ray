@@ -118,9 +118,6 @@ class RayTaskRunner(BaseTaskRunner):
         prefect_future: PrefectFuture,
         timeout: float = None,
     ) -> Optional[State]:
-        """
-        Wait for task to complete.
-        """
         ref = self._get_ray_ref(prefect_future)
 
         result = None
