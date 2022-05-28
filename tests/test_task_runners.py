@@ -11,7 +11,6 @@ import ray
 import ray.cluster_utils
 from prefect.orion.schemas.core import TaskRun
 from prefect.states import State
-from prefect.task_runners import TaskConcurrencyType
 from prefect.testing.fixtures import hosted_orion_api, use_hosted_orion  # noqa: F401
 from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
 
