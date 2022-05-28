@@ -30,7 +30,7 @@ class RayTaskRunner(BaseTaskRunner):
 
         Using a temporary local ray cluster:
         >>> from prefect import flow
-        >>> from prefect.task_runners import RayTaskRunner
+        >>> from prefect_ray.task_runners import RayTaskRunner
         >>> @flow(task_runner=RayTaskRunner)
 
         Connecting to an existing ray instance:
