@@ -26,4 +26,4 @@ Released on ????? ?th, 20??.
 
 ### Added
 
-- `task_name` task - [#1](https://github.com/PrefectHQ/prefect-ray/pull/1)
+- Migrated `RayTaskRunner` - [#7](https://github.com/PrefectHQ/prefect-ray/pull/7)
