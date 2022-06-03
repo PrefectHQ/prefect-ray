@@ -43,6 +43,7 @@ plugins:
             heading_level: 1
       watch:
         - prefect_ray/
+        - README.md
 
 nav:
     - Home: index.md
