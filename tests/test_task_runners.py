@@ -1,13 +1,60 @@
+import asyncio
+import logging
 import subprocess
+import sys
+import warnings
+from uuid import uuid4
 
 import prefect
 import pytest
 import ray
 import ray.cluster_utils
+from prefect.orion.schemas.core import TaskRun
+from prefect.states import State
+from prefect.testing.fixtures import hosted_orion_api, use_hosted_orion  # noqa: F401
+from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
 
-
+import tests
 from prefect_ray import RayTaskRunner
-from prefect.utilities.testing import TaskRunnerTests
+
+
+@pytest.fixture(scope="session")
+def event_loop(request):
+    """
+    Redefine the event loop to support session/module-scoped fixtures;
+    see https://github.com/pytest-dev/pytest-asyncio/issues/68
+    When running on Windows we need to use a non-default loop for subprocess support.
+    """
+    if sys.platform == "win32" and sys.version_info >= (3, 8):
+        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+
+    policy = asyncio.get_event_loop_policy()
+
+    if sys.version_info < (3, 8) and sys.platform != "win32":
+        from prefect.utilities.compat import ThreadedChildWatcher
+
+        # Python < 3.8 does not use a `ThreadedChildWatcher` by default which can
+        # lead to errors in tests as the previous default `SafeChildWatcher`  is not
+        # compatible with threaded event loops.
+        policy.set_child_watcher(ThreadedChildWatcher())
+
+    loop = policy.new_event_loop()
+
+    # configure asyncio logging to capture long running tasks
+    asyncio_logger = logging.getLogger("asyncio")
+    asyncio_logger.setLevel("WARNING")
+    asyncio_logger.addHandler(logging.StreamHandler())
+    loop.set_debug(True)
+    loop.slow_callback_duration = 0.25
+
+    try:
+        yield loop
+    finally:
+        loop.close()
+
+    # Workaround for failures in pytest_asyncio 0.17;
+    # see https://github.com/pytest-dev/pytest-asyncio/issues/257
+    policy.set_event_loop(loop)
 
 
 @pytest.fixture(scope="module")
@@ -26,8 +73,19 @@ def machine_ray_instance():
 
 
 @pytest.fixture
+def default_ray_task_runner():
+    with warnings.catch_warnings():
+        # Ray does not properly close resources and we do not want their warnings to
+        # bubble into our test suite
+        # https://github.com/ray-project/ray/pull/22419
+        warnings.simplefilter("ignore", ResourceWarning)
+
+        yield RayTaskRunner()
+
+
+@pytest.fixture
 def ray_task_runner_with_existing_cluster(
-    machine_ray_instance, use_hosted_orion, hosted_orion_api
+    machine_ray_instance, use_hosted_orion, hosted_orion_api  # noqa: F811
 ):
     """
     Generate a ray task runner that's connected to a ray instance running in a separate
@@ -39,9 +97,9 @@ def ray_task_runner_with_existing_cluster(
         address=machine_ray_instance,
         init_kwargs={
             "runtime_env": {
-                # Ship the 'prefect' module to the workers or they will not be able to
+                # Ship the 'tests' module to the workers or they will not be able to
                 # deserialize test tasks / flows
-                "py_modules": [prefect]
+                "py_modules": [tests]
             }
         },
     )
@@ -62,7 +120,7 @@ def inprocess_ray_cluster():
 
 @pytest.fixture
 def ray_task_runner_with_inprocess_cluster(
-    inprocess_ray_cluster, use_hosted_orion, hosted_orion_api
+    inprocess_ray_cluster, use_hosted_orion, hosted_orion_api  # noqa: F811
 ):
     """
     Generate a ray task runner that's connected to an in-process cluster.
@@ -74,16 +132,18 @@ def ray_task_runner_with_inprocess_cluster(
         address=inprocess_ray_cluster.address,
         init_kwargs={
             "runtime_env": {
-                # Ship the 'prefect' module to the workers or they will not be able to
+                # Ship the 'tests' module to the workers or they will not be able to
                 # deserialize test tasks / flows
-                "py_modules": [prefect]
+                "py_modules": [tests]
             }
         },
     )
 
 
 @pytest.fixture
-def ray_task_runner_with_temporary_cluster(use_hosted_orion, hosted_orion_api):
+def ray_task_runner_with_temporary_cluster(
+    use_hosted_orion, hosted_orion_api  # noqa: F811
+):
     """
     Generate a ray task runner that creates a temporary cluster.
 
@@ -93,23 +153,57 @@ def ray_task_runner_with_temporary_cluster(use_hosted_orion, hosted_orion_api):
     yield RayTaskRunner(
         init_kwargs={
             "runtime_env": {
-                # Ship the 'prefect' module to the workers or they will not be able to
+                # Ship the 'tests' module to the workers or they will not be able to
                 # deserialize test tasks / flows
-                "py_modules": [prefect]
+                "py_modules": [tests]
             }
         },
     )
 
 
-class TestRayTaskRunner(TaskRunnerTests):
+class TestRayTaskRunner(TaskRunnerStandardTestSuite):
     @pytest.fixture(
         params=[
-            ray_task_runner_with_temporary_cluster,
-            ray_task_runner_with_inprocess_cluster,
+            default_ray_task_runner,
             ray_task_runner_with_existing_cluster,
+            ray_task_runner_with_inprocess_cluster,
+            ray_task_runner_with_temporary_cluster,
         ]
     )
     def task_runner(self, request):
         yield request.getfixturevalue(
             request.param._pytestfixturefunction.name or request.param.__name__
         )
+
+    def get_sleep_time(self) -> float:
+        """
+        Return an amount of time to sleep for concurrency tests.
+        The RayTaskRunner is prone to flaking on concurrency tests.
+        """
+        return 5.0
+
+    @pytest.mark.parametrize("exception", [KeyboardInterrupt(), ValueError("test")])
+    async def test_wait_captures_exceptions_as_crashed_state(
+        self, task_runner, exception
+    ):
+        """
+        Ray wraps the exception, interrupts will result in "Cancelled" tasks
+        or "Killed" workers while normal errors will result in a "RayTaskError".
+        We care more about the crash detection and
+        lack of re-raise here than the equality of the exception.
+        """
+
+        task_run = TaskRun(flow_run_id=uuid4(), task_key="foo", dynamic_key="bar")
+
+        async def fake_orchestrate_task_run():
+            raise exception
+
+        async with task_runner.start():
+            future = await task_runner.submit(
+                task_run=task_run, run_fn=fake_orchestrate_task_run, run_kwargs={}
+            )
+
+            state = await task_runner.wait(future, 5)
+            assert state is not None, "wait timed out"
+            assert isinstance(state, State), "wait should return a state"
+            assert state.name == "Crashed"
