@@ -1,7 +1,7 @@
 """
 Interface and implementations of the Ray Task Runner.
-[Task Runners](/concepts/task-runners/) in Prefect are
-responsible for managing the execution of Prefect task runs.
+[Task Runners](https://orion-docs.prefect.io/api-ref/prefect/task-runners/)
+in Prefect are responsible for managing the execution of Prefect task runs.
 Generally speaking, users are not expected to interact with
 task runners outside of configuring and initializing them for a flow.
 
@@ -71,11 +71,18 @@ class RayTaskRunner(BaseTaskRunner):
         init_kwargs (dict, optional): Additional kwargs to use when calling `ray.init`.
     Examples:
         Using a temporary local ray cluster:
-        >>> from prefect import flow
-        >>> from prefect_ray.task_runners import RayTaskRunner
-        >>> @flow(task_runner=RayTaskRunner)
+        ```python
+        from prefect import flow
+        from prefect_ray.task_runners import RayTaskRunner
+
+        @flow(task_runner=RayTaskRunner())
+        def my_flow():
+            ...
+        ```
         Connecting to an existing ray instance:
-        >>> RayTaskRunner(address="ray://192.0.2.255:8786")
+        ```python
+        RayTaskRunner(address="ray://192.0.2.255:8786")
+        ```
     """
 
     def __init__(

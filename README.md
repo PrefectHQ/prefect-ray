@@ -28,7 +28,45 @@ pip install prefect-ray
 
 The `RayTaskRunner` is a [Prefect task runner](https://orion-docs.prefect.io/concepts/task-runners/) that submits tasks to [Ray](https://www.ray.io/) for parallel execution. 
 
-By default, a temporary Ray instance is created for the duration of the flow run. If you already have a Ray instance running, you can provide the connection URL via an `address` argument.
+By default, a temporary Ray instance is created for the duration of the flow run.
+
+For example, this flow says hello and goodbye in parallel.
+```python
+from prefect import flow, task
+from prefect_ray.task_runners import RayTaskRunner
+from typing import List
+
+@task
+def say_hello(name):
+    print(f"hello {name}")
+
+@task
+def say_goodbye(name):
+    print(f"goodbye {name}")
+
+@flow(task_runner=RayTaskRunner())
+def greetings(names: List[str]):
+    for name in names:
+        say_hello(name)
+        say_goodbye(name)
+
+
+greetings(["arthur", "trillian", "ford", "marvin"])
+
+# truncated output
+...
+goodbye trillian
+goodbye arthur
+hello trillian
+hello ford
+hello marvin
+hello arthur
+goodbye ford
+goodbye marvin
+...
+```
+
+If you already have a Ray instance running, you can provide the connection URL via an `address` argument.
 
 To configure your flow to use the `RayTaskRunner`:
 

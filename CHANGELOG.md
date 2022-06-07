@@ -22,8 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.1.0
 
-Released on ????? ?th, 20??.
+Released on June 7th, 2022.
 
 ### Added
 
-- Migrated `RayTaskRunner` - [#7](https://github.com/PrefectHQ/prefect-ray/pull/7)
+- Migrated `RayTaskRunner` from core Prefect library - [#7](https://github.com/PrefectHQ/prefect-ray/pull/7)
