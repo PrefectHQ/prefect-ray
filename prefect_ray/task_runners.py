@@ -71,11 +71,18 @@ class RayTaskRunner(BaseTaskRunner):
         init_kwargs (dict, optional): Additional kwargs to use when calling `ray.init`.
     Examples:
         Using a temporary local ray cluster:
-        >>> from prefect import flow
-        >>> from prefect_ray.task_runners import RayTaskRunner
-        >>> @flow(task_runner=RayTaskRunner)
+        ```python
+        from prefect import flow
+        from prefect_ray.task_runners import RayTaskRunner
+
+        @flow(task_runner=RayTaskRunner())
+        def my_flow():
+            ...
+        ```
         Connecting to an existing ray instance:
-        >>> RayTaskRunner(address="ray://192.0.2.255:8786")
+        ```python
+        RayTaskRunner(address="ray://192.0.2.255:8786")
+        ```
     """
 
     def __init__(
