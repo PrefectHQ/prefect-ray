@@ -28,7 +28,7 @@ Example:
 
     Switching to a `RayTaskRunner`:
     ```python
-    from prefect.task_runners import RayTaskRunner
+    from prefect_ray.task_runners import RayTaskRunner
     flow.task_runner = RayTaskRunner()
     greetings(["arthur", "trillian", "ford", "marvin"])
     ```
