@@ -31,7 +31,7 @@ The `RayTaskRunner` is a [Prefect task runner](https://orion-docs.prefect.io/con
 By default, a temporary Ray instance is created for the duration of the flow run.
 
 For example, this flow says hello and goodbye in parallel.
-```
+```python
 from prefect import flow, task
 from prefect_ray.task_runners import RayTaskRunner
 from typing import List
