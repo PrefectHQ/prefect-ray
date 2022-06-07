@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-- Expanded documentation and corrections to docstrings [#9](https://github.com/PrefectHQ/prefect-ray/pull/9)
 
 ### Deprecated
 
@@ -27,3 +26,4 @@ Released on June 7th, 2022.
 ### Added
 
 - Migrated `RayTaskRunner` from core Prefect library - [#7](https://github.com/PrefectHQ/prefect-ray/pull/7)
+- Expanded documentation and corrections to docstrings [#9](https://github.com/PrefectHQ/prefect-ray/pull/9)
