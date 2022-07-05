@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed `RayTaskRunner` compatibility with core Prefect library - [#7](https://github.com/PrefectHQ/prefect-ray/pull/17)
+- Fixed `RayTaskRunner` compatibility with core Prefect library - [#17](https://github.com/PrefectHQ/prefect-ray/pull/17)
 
 ### Security
 
