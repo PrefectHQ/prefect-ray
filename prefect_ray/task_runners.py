@@ -109,6 +109,7 @@ class RayTaskRunner(BaseTaskRunner):
     async def submit(
         self,
         task_run: TaskRun,
+        run_key: str,
         run_fn: Callable[..., Awaitable[State[R]]],
         run_kwargs: Dict[str, Any],
         asynchronous: A = True,
@@ -120,11 +121,14 @@ class RayTaskRunner(BaseTaskRunner):
 
         # Ray does not support the submission of async functions and we must create a
         # sync entrypoint
-        self._ray_refs[task_run.id] = ray.remote(sync_compatible(run_fn)).remote(
+        self._ray_refs[run_key] = ray.remote(sync_compatible(run_fn)).remote(
             **run_kwargs
         )
         return PrefectFuture(
-            task_run=task_run, task_runner=self, asynchronous=asynchronous
+            task_run=task_run,
+            task_runner=self,
+            run_key=run_key,
+            asynchronous=asynchronous,
         )
 
     async def wait(
@@ -188,4 +192,4 @@ class RayTaskRunner(BaseTaskRunner):
         """
         Retrieve the ray object reference corresponding to a prefect future.
         """
-        return self._ray_refs[prefect_future.run_id]
+        return self._ray_refs[prefect_future.run_key]
