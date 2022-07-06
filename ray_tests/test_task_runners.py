@@ -14,7 +14,7 @@ from prefect.states import State
 from prefect.testing.fixtures import hosted_orion_api, use_hosted_orion  # noqa: F401
 from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
 
-import tests
+import ray_tests
 from prefect_ray import RayTaskRunner
 
 
@@ -99,7 +99,7 @@ def ray_task_runner_with_existing_cluster(
             "runtime_env": {
                 # Ship the 'tests' module to the workers or they will not be able to
                 # deserialize test tasks / flows
-                "py_modules": [tests]
+                "py_modules": [ray_tests]
             }
         },
     )
@@ -134,7 +134,7 @@ def ray_task_runner_with_inprocess_cluster(
             "runtime_env": {
                 # Ship the 'tests' module to the workers or they will not be able to
                 # deserialize test tasks / flows
-                "py_modules": [tests]
+                "py_modules": [ray_tests]
             }
         },
     )
@@ -155,7 +155,7 @@ def ray_task_runner_with_temporary_cluster(
             "runtime_env": {
                 # Ship the 'tests' module to the workers or they will not be able to
                 # deserialize test tasks / flows
-                "py_modules": [tests]
+                "py_modules": [ray_tests]
             }
         },
     )
