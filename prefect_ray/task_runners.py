@@ -47,7 +47,6 @@ Example:
 
 from contextlib import AsyncExitStack
 from typing import Any, Awaitable, Callable, Dict, Optional
-from uuid import UUID
 
 import anyio
 import ray
@@ -98,7 +97,7 @@ class RayTaskRunner(BaseTaskRunner):
         self.init_kwargs
 
         # Runtime attributes
-        self._ray_refs: Dict[UUID, "ray.ObjectRef"] = {}
+        self._ray_refs: Dict[str, "ray.ObjectRef"] = {}
 
         super().__init__()
 
