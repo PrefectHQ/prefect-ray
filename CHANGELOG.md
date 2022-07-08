@@ -17,9 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed `RayTaskRunner` compatibility with core Prefect library - [#17](https://github.com/PrefectHQ/prefect-ray/pull/17)
-
 ### Security
+
+## 0.1.1
+
+Released on July 8th, 2022.
+
+### Fixed
+
+- Fixed `RayTaskRunner` compatibility with core Prefect library - [#17](https://github.com/PrefectHQ/prefect-ray/pull/17)
 
 ## 0.1.0
 
