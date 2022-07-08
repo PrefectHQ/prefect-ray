@@ -25,7 +25,7 @@ Released on July 8th, 2022.
 
 ### Fixed
 
-- Fixed `RayTaskRunner` compatibility with core Prefect library - [#17](https://github.com/PrefectHQ/prefect-ray/pull/17)
+- Updated `RayTaskRunner` to be compatible with core Prefect library (v2.08b) - [#17](https://github.com/PrefectHQ/prefect-ray/pull/17)
 
 ## 0.1.0
 
