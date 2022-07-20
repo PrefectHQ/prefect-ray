@@ -25,7 +25,7 @@ Released on July 20th, 2022.
 
 ### Changed
 
-- Updated tests to be compatible with core Prefect library (v2.0b9) and bumped required version - [#28](https://github.com/PrefectHQ/prefect-dbt/pull/28)
+- Updated tests to be compatible with core Prefect library (v2.0b9) and bumped required version - [#20](https://github.com/PrefectHQ/prefect-ray/pull/20)
 
 ## 0.1.1
 
