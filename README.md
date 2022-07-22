@@ -30,40 +30,31 @@ The `RayTaskRunner` is a [Prefect task runner](https://orion-docs.prefect.io/con
 
 By default, a temporary Ray instance is created for the duration of the flow run.
 
-For example, this flow says hello and goodbye in parallel.
+For example, this flow counts to 3 in parallel.
+
 ```python
+import time
+
 from prefect import flow, task
-from prefect_ray.task_runners import RayTaskRunner
-from typing import List
+from prefect_ray import RayTaskRunner
 
 @task
-def say_hello(name):
-    print(f"hello {name}")
+def shout(number):
+    time.sleep(0.5)
+    print(f"#{number}")
 
-@task
-def say_goodbye(name):
-    print(f"goodbye {name}")
+@flow(task_runner=RayTaskRunner)
+def count_to(highest_number):
+    for number in range(highest_number):
+        shout.submit(number)
 
-@flow(task_runner=RayTaskRunner())
-def greetings(names: List[str]):
-    for name in names:
-        say_hello(name)
-        say_goodbye(name)
+if __name__ == "__main__":
+    count_to(3)
 
-
-greetings(["arthur", "trillian", "ford", "marvin"])
-
-# truncated output
-...
-goodbye trillian
-goodbye arthur
-hello trillian
-hello ford
-hello marvin
-hello arthur
-goodbye ford
-goodbye marvin
-...
+# outputs
+#0
+#2
+#1
 ```
 
 If you already have a Ray instance running, you can provide the connection URL via an `address` argument.
