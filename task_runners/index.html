@@ -345,38 +345,51 @@ task runners outside of configuring and initializing them for a flow.</p>
 
 <details class="example">
   <summary>Example</summary>
-  <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.task_runners</span> <span class="kn">import</span> <span class="n">SequentialTaskRunner</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+  <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_goodbye</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;goodbye </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">count_to</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+        <span class="n">shout</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
 
-<span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">SequentialTaskRunner</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">greetings</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
-        <span class="n">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">say_goodbye</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">count_to</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># outputs</span>
+<span class="c1">#0</span>
+<span class="c1">#1</span>
+<span class="c1">#2</span>
 </code></pre></div>
 <p>Switching to a <code>RayTaskRunner</code>:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_ray.task_runners</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
-<span class="n">flow</span><span class="o">.</span><span class="n">task_runner</span> <span class="o">=</span> <span class="n">RayTaskRunner</span><span class="p">()</span>
-<span class="n">greetings</span><span class="p">([</span><span class="s2">&quot;arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;trillian&quot;</span><span class="p">,</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;marvin&quot;</span><span class="p">])</span>
-</code></pre></div>
-Output:
-<div class="highlight"><pre><span></span><code>hello arthur
-goodbye arthur
-hello trillian
-hello ford
-goodbye marvin
-hello marvin
-goodbye ford
-goodbye trillian
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span> <span class="nn">prefect_ray</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">RayTaskRunner</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">count_to</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+        <span class="n">shout</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">count_to</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># outputs</span>
+<span class="c1">#0</span>
+<span class="c1">#2</span>
+<span class="c1">#1</span>
 </code></pre></div></p>
 </details>
   
@@ -460,19 +473,7 @@ Connecting to an existing ray instance:
 
         <details class="quote">
           <summary>Source code in <code>prefect_ray/task_runners.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 73</span>
 <span class="normal"> 74</span>
 <span class="normal"> 75</span>
 <span class="normal"> 76</span>
@@ -593,7 +594,19 @@ Connecting to an existing ray instance:
 <span class="normal">191</span>
 <span class="normal">192</span>
 <span class="normal">193</span>
-<span class="normal">194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RayTaskRunner</span><span class="p">(</span><span class="n">BaseTaskRunner</span><span class="p">):</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RayTaskRunner</span><span class="p">(</span><span class="n">BaseTaskRunner</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A parallel task_runner that submits tasks to `ray`.</span>
 <span class="sd">    By default, a temporary Ray cluster is created for the duration of the flow run.</span>
