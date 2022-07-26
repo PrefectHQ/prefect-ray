@@ -360,12 +360,19 @@ task runners outside of configuring and initializing them for a flow.</p>
         <span class="n">shout</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">count_to</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">count_to</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="c1"># outputs</span>
 <span class="c1">#0</span>
 <span class="c1">#1</span>
 <span class="c1">#2</span>
+<span class="c1">#3</span>
+<span class="c1">#4</span>
+<span class="c1">#5</span>
+<span class="c1">#6</span>
+<span class="c1">#7</span>
+<span class="c1">#8</span>
+<span class="c1">#9</span>
 </code></pre></div>
 <p>Switching to a <code>RayTaskRunner</code>:
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
@@ -384,12 +391,19 @@ task runners outside of configuring and initializing them for a flow.</p>
         <span class="n">shout</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">count_to</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">count_to</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="c1"># outputs</span>
-<span class="c1">#0</span>
+<span class="c1">#3</span>
+<span class="c1">#7</span>
 <span class="c1">#2</span>
+<span class="c1">#6</span>
+<span class="c1">#4</span>
+<span class="c1">#0</span>
 <span class="c1">#1</span>
+<span class="c1">#5</span>
+<span class="c1">#8</span>
+<span class="c1">#9</span>
 </code></pre></div></p>
 </details>
   
@@ -473,21 +487,7 @@ Connecting to an existing ray instance:
 
         <details class="quote">
           <summary>Source code in <code>prefect_ray/task_runners.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 87</span>
 <span class="normal"> 88</span>
 <span class="normal"> 89</span>
 <span class="normal"> 90</span>
@@ -606,7 +606,21 @@ Connecting to an existing ray instance:
 <span class="normal">203</span>
 <span class="normal">204</span>
 <span class="normal">205</span>
-<span class="normal">206</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RayTaskRunner</span><span class="p">(</span><span class="n">BaseTaskRunner</span><span class="p">):</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RayTaskRunner</span><span class="p">(</span><span class="n">BaseTaskRunner</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A parallel task_runner that submits tasks to `ray`.</span>
 <span class="sd">    By default, a temporary Ray cluster is created for the duration of the flow run.</span>
