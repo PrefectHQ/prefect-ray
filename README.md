@@ -24,6 +24,13 @@ Install `prefect-ray` with `pip`:
 pip install prefect-ray
 ```
 
+Apple Silicon users will need to additionally run:
+```
+pip uninstall grpcio
+conda install grpcio
+```
+Check out https://docs.ray.io/en/master/ray-overview/installation.html#m1-mac-apple-silicon-support for more details.
+
 ## Running tasks on Ray
 
 The `RayTaskRunner` is a [Prefect task runner](https://orion-docs.prefect.io/concepts/task-runners/) that submits tasks to [Ray](https://www.ray.io/) for parallel execution. 
