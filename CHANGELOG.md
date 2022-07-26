@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.1.3
+
+Released on July 26th, 2022.
+
+### Changed
+
+- Dropping x86_64 requirement so ray can be automatically installed [#29](https://github.com/PrefectHQ/prefect-ray/pull/29).
+- Examples to better exemplify parallelism [#29](https://github.com/PrefectHQ/prefect-ray/pull/29).
+
 ## 0.1.2
 
 Released on July 20th, 2022.
