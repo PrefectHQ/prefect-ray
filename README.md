@@ -24,12 +24,12 @@ Install `prefect-ray` with `pip`:
 pip install prefect-ray
 ```
 
-Apple Silicon users will need to additionally run:
+Users running Apple Silicon (such as M1 macs) will need to additionally run:
 ```
 pip uninstall grpcio
 conda install grpcio
 ```
-Check out https://docs.ray.io/en/master/ray-overview/installation.html#m1-mac-apple-silicon-support for more details.
+Click [here](https://docs.ray.io/en/master/ray-overview/installation.html#m1-mac-apple-silicon-support) for more details.
 
 ## Running tasks on Ray
 
