@@ -49,12 +49,19 @@ def count_to(highest_number):
         shout.submit(number)
 
 if __name__ == "__main__":
-    count_to(3)
+    count_to(10)
 
 # outputs
-#0
+#3
+#7
 #2
+#6
+#4
+#0
 #1
+#5
+#8
+#9
 ```
 
 If you already have a Ray instance running, you can provide the connection URL via an `address` argument.
