@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- `pickle5` requirement for Python < 3.8 users [#30](https://github.com/PrefectHQ/prefect-ray/pull/30).
 
 ### Changed
 
