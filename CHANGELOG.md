@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.1.4
+
+Released on August 2nd, 2022.
+
+### Added
+- `pickle5` requirement for Python < 3.8 users [#30](https://github.com/PrefectHQ/prefect-ray/pull/30).
+
 ## 0.1.3
 
 Released on July 26th, 2022.
