@@ -183,16 +183,16 @@ class RayTaskRunner(BaseTaskRunner):
         - Creates a client to connect to the cluster.
         - Pushes a call to wait for all running futures to complete on exit.
         """
-        # If this method is called twice, like in a subflow, ray.init() yields:
-        # RuntimeError: Maybe you called ray.init twice by accident?
-        if ray.is_initialized():
-            return
-
-        if self.address:
+        if self.address and self.address != "auto":
             self.logger.info(
                 f"Connecting to an existing Ray instance at {self.address}"
             )
             init_args = (self.address,)
+        elif ray.is_initialized():
+            self.logger.info(
+                f"Local Ray instance is already initialized. Using existing local instance."
+            )
+            return
         else:
             self.logger.info("Creating a local Ray instance")
             init_args = ()
