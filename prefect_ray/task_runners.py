@@ -190,7 +190,8 @@ class RayTaskRunner(BaseTaskRunner):
             init_args = (self.address,)
         elif ray.is_initialized():
             self.logger.info(
-                f"Local Ray instance is already initialized. Using existing local instance."
+                "Local Ray instance is already initialized. "
+                "Using existing local instance."
             )
             return
         else:
