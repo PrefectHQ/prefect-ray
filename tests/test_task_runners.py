@@ -2,6 +2,7 @@ import asyncio
 import logging
 import subprocess
 import sys
+import time
 import warnings
 from uuid import uuid4
 
@@ -9,6 +10,7 @@ import prefect
 import pytest
 import ray
 import ray.cluster_utils
+from prefect import flow, task
 from prefect.orion.schemas.core import TaskRun
 from prefect.states import State
 from prefect.testing.fixtures import hosted_orion_api, use_hosted_orion  # noqa: F401
@@ -210,3 +212,23 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
             assert state is not None, "wait timed out"
             assert isinstance(state, State), "wait should return a state"
             assert state.name == "Crashed"
+
+    def test_flow_and_subflow_both_with_task_runner(self, task_runner, tmp_file):
+        @task
+        def some_task(text):
+            tmp_file.write_text(text)
+
+        @flow(task_runner=RayTaskRunner())
+        def subflow():
+            some_task.submit("a")
+            some_task.submit("b")
+            some_task.submit("c")
+
+        @flow(task_runner=task_runner)
+        def base_flow():
+            subflow()
+            time.sleep(self.get_sleep_time())
+            some_task.submit("d")
+
+        base_flow()
+        assert tmp_file.read_text() == "d"

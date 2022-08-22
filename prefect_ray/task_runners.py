@@ -183,11 +183,17 @@ class RayTaskRunner(BaseTaskRunner):
         - Creates a client to connect to the cluster.
         - Pushes a call to wait for all running futures to complete on exit.
         """
-        if self.address:
+        if self.address and self.address != "auto":
             self.logger.info(
                 f"Connecting to an existing Ray instance at {self.address}"
             )
             init_args = (self.address,)
+        elif ray.is_initialized():
+            self.logger.info(
+                "Local Ray instance is already initialized. "
+                "Using existing local instance."
+            )
+            return
         else:
             self.logger.info("Creating a local Ray instance")
             init_args = ()
