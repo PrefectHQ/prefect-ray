@@ -200,15 +200,15 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         async def fake_orchestrate_task_run():
             raise exception
 
+        test_key = uuid4()
+
         async with task_runner.start():
             future = await task_runner.submit(
-                task_run=task_run,
-                run_fn=fake_orchestrate_task_run,
-                run_key="run_key_input",
-                run_kwargs={},
+                call=fake_orchestrate_task_run,
+                run_key=test_key,
             )
 
-            state = await task_runner.wait(future, 5)
+            state = await task_runner.wait(test_key, 5)
             assert state is not None, "wait timed out"
             assert isinstance(state, State), "wait should return a state"
             assert state.name == "Crashed"

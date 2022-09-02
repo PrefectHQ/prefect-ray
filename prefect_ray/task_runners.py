@@ -73,6 +73,7 @@ Example:
 
 from contextlib import AsyncExitStack
 from typing import Any, Awaitable, Callable, Dict, Optional
+from uuid import UUID
 
 import anyio
 import ray
@@ -133,12 +134,9 @@ class RayTaskRunner(BaseTaskRunner):
 
     async def submit(
         self,
-        task_run: TaskRun,
-        run_key: str,
-        run_fn: Callable[..., Awaitable[State[R]]],
-        run_kwargs: Dict[str, Any],
-        asynchronous: A = True,
-    ) -> PrefectFuture[R, A]:
+        key: UUID,
+        call: Callable[..., Awaitable[State[R]]],
+    ) -> None:
         if not self._started:
             raise RuntimeError(
                 "The task runner must be started before submitting work."
@@ -146,22 +144,12 @@ class RayTaskRunner(BaseTaskRunner):
 
         # Ray does not support the submission of async functions and we must create a
         # sync entrypoint
-        self._ray_refs[run_key] = ray.remote(sync_compatible(run_fn)).remote(
-            **run_kwargs
-        )
-        return PrefectFuture(
-            task_run=task_run,
-            task_runner=self,
-            run_key=run_key,
-            asynchronous=asynchronous,
+        self._ray_refs[key] = ray.remote(sync_compatible(call.func)).remote(
+            **call.keywords
         )
 
-    async def wait(
-        self,
-        prefect_future: PrefectFuture,
-        timeout: float = None,
-    ) -> Optional[State]:
-        ref = self._get_ray_ref(prefect_future)
+    async def wait(self, key: UUID, timeout: float = None) -> Optional[State]:
+        ref = self._get_ray_ref(key)
 
         result = None
 
@@ -219,8 +207,8 @@ class RayTaskRunner(BaseTaskRunner):
         self.logger.debug("Shutting down Ray cluster...")
         ray.shutdown()
 
-    def _get_ray_ref(self, prefect_future: PrefectFuture) -> "ray.ObjectRef":
+    def _get_ray_ref(self, key: UUID) -> "ray.ObjectRef":
         """
         Retrieve the ray object reference corresponding to a prefect future.
         """
-        return self._ray_refs[prefect_future.run_key]
+        return self._ray_refs[key]
