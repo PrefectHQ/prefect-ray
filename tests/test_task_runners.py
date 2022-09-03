@@ -11,7 +11,6 @@ import pytest
 import ray
 import ray.cluster_utils
 from prefect import flow, task
-from prefect.orion.schemas.core import TaskRun
 from prefect.states import State
 from prefect.testing.fixtures import hosted_orion_api, use_hosted_orion  # noqa: F401
 from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
@@ -195,15 +194,13 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         lack of re-raise here than the equality of the exception.
         """
 
-        task_run = TaskRun(flow_run_id=uuid4(), task_key="foo", dynamic_key="bar")
-
         async def fake_orchestrate_task_run():
             raise exception
 
         test_key = uuid4()
 
         async with task_runner.start():
-            future = await task_runner.submit(
+            await task_runner.submit(
                 call=fake_orchestrate_task_run,
                 run_key=test_key,
             )

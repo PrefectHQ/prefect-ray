@@ -72,17 +72,15 @@ Example:
 """
 
 from contextlib import AsyncExitStack
-from typing import Any, Awaitable, Callable, Dict, Optional
+from typing import Awaitable, Callable, Dict, Optional
 from uuid import UUID
 
 import anyio
 import ray
-from prefect.futures import PrefectFuture
-from prefect.orion.schemas.core import TaskRun
 from prefect.orion.schemas.states import State
 from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
-from prefect.utilities.asyncutils import A, sync_compatible
+from prefect.utilities.asyncutils import sync_compatible
 
 
 class RayTaskRunner(BaseTaskRunner):
