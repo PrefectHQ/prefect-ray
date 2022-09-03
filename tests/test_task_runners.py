@@ -4,6 +4,7 @@ import subprocess
 import sys
 import time
 import warnings
+from functools import partial
 from uuid import uuid4
 
 import prefect
@@ -201,7 +202,7 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
 
         async with task_runner.start():
             await task_runner.submit(
-                call=fake_orchestrate_task_run,
+                call=partial(fake_orchestrate_task_run),
                 run_key=test_key,
             )
 
