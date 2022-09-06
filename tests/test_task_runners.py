@@ -203,7 +203,7 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         async with task_runner.start():
             await task_runner.submit(
                 call=partial(fake_orchestrate_task_run),
-                run_key=test_key,
+                key=test_key,
             )
 
             state = await task_runner.wait(test_key, 5)
