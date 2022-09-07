@@ -81,8 +81,8 @@ from prefect.futures import PrefectFuture
 from prefect.orion.schemas.states import State
 from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
-from prefect.utilities.collections import visit_collection
 from prefect.utilities.asyncutils import sync_compatible
+from prefect.utilities.collections import visit_collection
 
 
 class RayTaskRunner(BaseTaskRunner):
