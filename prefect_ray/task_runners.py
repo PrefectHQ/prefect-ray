@@ -77,9 +77,11 @@ from uuid import UUID
 
 import anyio
 import ray
+from prefect.futures import PrefectFuture
 from prefect.orion.schemas.states import State
 from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
+from prefect.utilities.collections import visit_collection
 from prefect.utilities.asyncutils import sync_compatible
 
 
@@ -140,11 +142,24 @@ class RayTaskRunner(BaseTaskRunner):
                 "The task runner must be started before submitting work."
             )
 
+        call_kwargs = self._optimize_futures(call.keywords)
+
         # Ray does not support the submission of async functions and we must create a
         # sync entrypoint
         self._ray_refs[key] = ray.remote(sync_compatible(call.func)).remote(
-            **call.keywords
+            **call.call_kwargs
         )
+
+    def _optimize_futures(self, expr):
+        def visit_fn(expr):
+            if isinstance(expr, PrefectFuture):
+                ray_future = self._ray_refs.get(expr.key)
+                if ray_future is not None:
+                    return ray_future
+            # Fallback to return the expression unaltered
+            return expr
+
+        return visit_collection(expr, visit_fn=visit_fn, return_data=True)
 
     async def wait(self, key: UUID, timeout: float = None) -> Optional[State]:
         ref = self._get_ray_ref(key)
