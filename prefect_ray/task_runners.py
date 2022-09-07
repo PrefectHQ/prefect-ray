@@ -147,7 +147,7 @@ class RayTaskRunner(BaseTaskRunner):
         # Ray does not support the submission of async functions and we must create a
         # sync entrypoint
         self._ray_refs[key] = ray.remote(sync_compatible(call.func)).remote(
-            **call.call_kwargs
+            **call_kwargs
         )
 
     def _optimize_futures(self, expr):
