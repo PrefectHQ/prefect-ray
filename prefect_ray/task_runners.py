@@ -151,9 +151,9 @@ class RayTaskRunner(BaseTaskRunner):
         )
 
     def _optimize_futures(self, expr):
-    """
-    Exchange PrefectFutures for ray-compatible futures
-    """
+        """
+        Exchange PrefectFutures for ray-compatible futures
+        """
 
         def visit_fn(expr):
             if isinstance(expr, PrefectFuture):
