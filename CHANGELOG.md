@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
-- `pickle5` requirement for Python < 3.8 users [#30](https://github.com/PrefectHQ/prefect-ray/pull/30).
 
 ### Changed
 
@@ -17,9 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ### Fixed
-- Updated `RayTaskRunner` to be compatible with the updated `TaskRunner` interface in the Prefect Core library (v2.3.0) [#35](https://github.com/PrefectHQ/prefect-ray/pull/35)
 
 ### Security
+
+## 0.2.0
+
+Released September 8th, 2022
+
+### Added
+- `pickle5` requirement for Python < 3.8 users [#30](https://github.com/PrefectHQ/prefect-ray/pull/30).
+
+### Fixed
+- Updated `RayTaskRunner` to be compatible with the updated `TaskRunner` interface in the Prefect Core library (v2.3.0) [#35](https://github.com/PrefectHQ/prefect-ray/pull/35)
 
 ## 0.1.4
 
