@@ -156,6 +156,9 @@ class RayTaskRunner(BaseTaskRunner):
         """
 
         def visit_fn(expr):
+            """
+            Tries to get the future.
+            """
             if isinstance(expr, PrefectFuture):
                 ray_future = self._ray_refs.get(expr.key)
                 if ray_future is not None:
