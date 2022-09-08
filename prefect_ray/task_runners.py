@@ -72,16 +72,17 @@ Example:
 """
 
 from contextlib import AsyncExitStack
-from typing import Any, Awaitable, Callable, Dict, Optional
+from typing import Awaitable, Callable, Dict, Optional
+from uuid import UUID
 
 import anyio
 import ray
 from prefect.futures import PrefectFuture
-from prefect.orion.schemas.core import TaskRun
 from prefect.orion.schemas.states import State
 from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
-from prefect.utilities.asyncutils import A, sync_compatible
+from prefect.utilities.asyncutils import sync_compatible
+from prefect.utilities.collections import visit_collection
 
 
 class RayTaskRunner(BaseTaskRunner):
@@ -133,35 +134,42 @@ class RayTaskRunner(BaseTaskRunner):
 
     async def submit(
         self,
-        task_run: TaskRun,
-        run_key: str,
-        run_fn: Callable[..., Awaitable[State[R]]],
-        run_kwargs: Dict[str, Any],
-        asynchronous: A = True,
-    ) -> PrefectFuture[R, A]:
+        key: UUID,
+        call: Callable[..., Awaitable[State[R]]],
+    ) -> None:
         if not self._started:
             raise RuntimeError(
                 "The task runner must be started before submitting work."
             )
 
+        call_kwargs = self._optimize_futures(call.keywords)
+
         # Ray does not support the submission of async functions and we must create a
         # sync entrypoint
-        self._ray_refs[run_key] = ray.remote(sync_compatible(run_fn)).remote(
-            **run_kwargs
-        )
-        return PrefectFuture(
-            task_run=task_run,
-            task_runner=self,
-            run_key=run_key,
-            asynchronous=asynchronous,
+        self._ray_refs[key] = ray.remote(sync_compatible(call.func)).remote(
+            **call_kwargs
         )
 
-    async def wait(
-        self,
-        prefect_future: PrefectFuture,
-        timeout: float = None,
-    ) -> Optional[State]:
-        ref = self._get_ray_ref(prefect_future)
+    def _optimize_futures(self, expr):
+        """
+        Exchange PrefectFutures for ray-compatible futures
+        """
+
+        def visit_fn(expr):
+            """
+            Resolves ray futures when used as dependencies
+            """
+            if isinstance(expr, PrefectFuture):
+                ray_future = self._ray_refs.get(expr.key)
+                if ray_future is not None:
+                    return ray.get(ray_future)
+            # Fallback to return the expression unaltered
+            return expr
+
+        return visit_collection(expr, visit_fn=visit_fn, return_data=True)
+
+    async def wait(self, key: UUID, timeout: float = None) -> Optional[State]:
+        ref = self._get_ray_ref(key)
 
         result = None
 
@@ -219,8 +227,8 @@ class RayTaskRunner(BaseTaskRunner):
         self.logger.debug("Shutting down Ray cluster...")
         ray.shutdown()
 
-    def _get_ray_ref(self, prefect_future: PrefectFuture) -> "ray.ObjectRef":
+    def _get_ray_ref(self, key: UUID) -> "ray.ObjectRef":
         """
         Retrieve the ray object reference corresponding to a prefect future.
         """
-        return self._ray_refs[prefect_future.run_key]
+        return self._ray_refs[key]

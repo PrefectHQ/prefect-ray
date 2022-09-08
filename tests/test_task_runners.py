@@ -4,6 +4,7 @@ import subprocess
 import sys
 import time
 import warnings
+from functools import partial
 from uuid import uuid4
 
 import prefect
@@ -11,7 +12,6 @@ import pytest
 import ray
 import ray.cluster_utils
 from prefect import flow, task
-from prefect.orion.schemas.core import TaskRun
 from prefect.states import State
 from prefect.testing.fixtures import hosted_orion_api, use_hosted_orion  # noqa: F401
 from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
@@ -195,20 +195,18 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         lack of re-raise here than the equality of the exception.
         """
 
-        task_run = TaskRun(flow_run_id=uuid4(), task_key="foo", dynamic_key="bar")
-
         async def fake_orchestrate_task_run():
             raise exception
 
+        test_key = uuid4()
+
         async with task_runner.start():
-            future = await task_runner.submit(
-                task_run=task_run,
-                run_fn=fake_orchestrate_task_run,
-                run_key="run_key_input",
-                run_kwargs={},
+            await task_runner.submit(
+                call=partial(fake_orchestrate_task_run),
+                key=test_key,
             )
 
-            state = await task_runner.wait(future, 5)
+            state = await task_runner.wait(test_key, 5)
             assert state is not None, "wait timed out"
             assert isinstance(state, State), "wait should return a state"
             assert state.name == "Crashed"
