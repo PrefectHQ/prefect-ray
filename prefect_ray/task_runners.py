@@ -157,7 +157,7 @@ class RayTaskRunner(BaseTaskRunner):
 
         def visit_fn(expr):
             """
-            Tries to get the future.
+            Resolves ray futures when used as dependencies
             """
             if isinstance(expr, PrefectFuture):
                 ray_future = self._ray_refs.get(expr.key)
