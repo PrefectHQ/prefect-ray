@@ -170,8 +170,7 @@ class RayTaskRunner(BaseTaskRunner):
             # We await the reference directly instead of using `ray.get` so we can
             # avoid blocking the event loop
             try:
-                ref_result = await ref
-                result = ref_result.get.remote()
+                result = await ref
             except BaseException as exc:
                 result = exception_to_crashed_state(exc)
 
