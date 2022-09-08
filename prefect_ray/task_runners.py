@@ -155,7 +155,7 @@ class RayTaskRunner(BaseTaskRunner):
             if isinstance(expr, PrefectFuture):
                 ray_future = self._ray_refs.get(expr.key)
                 if ray_future is not None:
-                    return ray_future
+                    return ray_future.get()
             # Fallback to return the expression unaltered
             return expr
 
