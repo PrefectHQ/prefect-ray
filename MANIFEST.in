@@ -6,7 +6,7 @@ global-exclude __pycache__/**
 
 # Top-level Config
 include versioneer.py
-include prefect_dask/_version.py
+include prefect_ray/_version.py
 include LICENSE
 include MANIFEST.in
 include setup.cfg
