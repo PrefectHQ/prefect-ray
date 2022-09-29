@@ -79,6 +79,11 @@ import anyio
 import ray
 from prefect.futures import PrefectFuture
 from prefect.orion.schemas.states import State
+from prefect.settings import (PREFECT_HOME,
+                              PREFECT_PROFILES_PATH,
+                              PREFECT_LOCAL_STORAGE_PATH,
+                              PREFECT_LOGGING_SETTINGS_PATH,
+                              PREFECT_ORION_DATABASE_CONNECTION_URL)
 from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
 from prefect.utilities.asyncutils import sync_compatible
@@ -116,6 +121,13 @@ class RayTaskRunner(BaseTaskRunner):
         address: str = None,
         init_kwargs: dict = None,
     ):
+        import pathlib
+        PREFECT_HOME.value = lambda: pathlib.Path("/tmp/prefect")
+        PREFECT_PROFILES_PATH.value = lambda: pathlib.Path("/tmp/prefect/profiles.toml")
+        PREFECT_LOCAL_STORAGE_PATH.value = lambda: pathlib.Path("/tmp/prefect/storage")
+        PREFECT_LOGGING_SETTINGS_PATH.value = lambda: pathlib.Path("/tmp/prefect/logging.yml")
+        PREFECT_ORION_DATABASE_CONNECTION_URL.value = lambda: pathlib.Path("sqlite+aiosqlite:////tmp/prefect/orion.db")
+
         # Store settings
         self.address = address
         self.init_kwargs = init_kwargs.copy() if init_kwargs else {}
