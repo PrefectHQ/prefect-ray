@@ -122,18 +122,19 @@ Note that Ray Client uses the [ray://](https://docs.ray.io/en/master/cluster/ray
 ## Running tasks on a Ray remote cluster
 
 1. Set `PREFECT_LOCAL_STORAGE_PATH` to a path accessible on both the remote cluster and the machine executing the flow:
-`prefect config set PREFECT_LOCAL_STORAGE_PATH=<PATH/ACCESSIBLE/ON/BOTH>`
-
-For example:
-`prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'`
+```bash
+prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'
+```
 
 2. Ensure `prefect` is installed on the remote cluster, with:
-`pip install prefect`
+```bash
+pip install prefect
+```
 
-3. Pass `address='ray://<head_node_ip_address>:10001'`.
-
-For example:
-`RayTaskRunner(address="ray://1.23.199.255:10001")`
+3. Pass `address='ray://<head_node_ip_address>:10001'`:
+```bash
+RayTaskRunner(address="ray://1.23.199.255:10001")
+```
 
 ## Resources
 
