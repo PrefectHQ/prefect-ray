@@ -1,0 +1,20 @@
+{
+  "template": "https://github.com/PrefectHQ/prefect-collection-template",
+  "commit": "0f453a7cd6b0365e16c326a5e3350fe582b07086",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "full_name": "Prefect Technologies, Inc.",
+      "email": "help@prefect.io",
+      "github_organization": "PrefectHQ",
+      "collection_name": "prefect-ray",
+      "collection_slug": "prefect_ray",
+      "collection_short_description": "Prefect integrations with the Ray execution framework, a flexible distributed computing framework for Python.",
+      "_copy_without_render": [
+        ".github/workflows/*.yml"
+      ],
+      "_template": "https://github.com/PrefectHQ/prefect-collection-template"
+    }
+  },
+  "directory": null
+}
