@@ -9,8 +9,9 @@ theme:
     primary: blue
     accent: blue
   icon:
-      repo: fontawesome/brands/github
-  logo: img/prefect-logo-white.png
+    repo: fontawesome/brands/github
+  logo:
+    img/prefect-logo-mark-solid-white-500.png
   font:
     text: Inter
     code: Source Code Pro
@@ -37,8 +38,8 @@ plugins:
           rendering:
             show_root_heading: True
             show_object_full_path: False
-            show_category_heading: False
-            show_bases: False
+            show_category_heading: True
+            show_bases: True
             show_signature: False
             heading_level: 1
       watch:
