@@ -128,7 +128,7 @@ When using the `RayTaskRunner` with a remote Ray cluster, you may run into issue
 prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'
 ```
 
-2. If you get an error stating that the module 'prefet' cannot be found, ensure `prefect` is installed on the remote cluster, with:
+2. If you get an error stating that the module 'prefect' cannot be found, ensure `prefect` is installed on the remote cluster, with:
 ```bash
 pip install prefect
 ```
