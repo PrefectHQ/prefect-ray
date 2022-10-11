@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://prefecthq.github.io/prefect-ray/">
       
       <link rel="icon" href="img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.0">
+      <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.5.6">
     
     
       
@@ -19,7 +19,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.2e8b5541.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.20d9efc8.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.cbb835fc.min.css">
@@ -88,7 +88,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="." title="prefect-ray" class="md-header__button md-logo" aria-label="prefect-ray" data-md-component="logo">
       
-  <img src="img/prefect-logo-white.png" alt="logo">
+  <img src="img/prefect-logo-mark-solid-white-500.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -185,7 +185,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="." title="prefect-ray" class="md-nav__button md-logo" aria-label="prefect-ray" data-md-component="logo">
       
-  <img src="img/prefect-logo-white.png" alt="logo">
+  <img src="img/prefect-logo-mark-solid-white-500.png" alt="logo">
 
     </a>
     prefect-ray
@@ -283,6 +283,13 @@
         <li class="md-nav__item">
   <a href="#running-tasks-on-ray" class="md-nav__link">
     Running tasks on Ray
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-tasks-on-a-ray-remote-cluster" class="md-nav__link">
+    Running tasks on a Ray remote cluster
   </a>
   
 </li>
@@ -392,6 +399,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#running-tasks-on-a-ray-remote-cluster" class="md-nav__link">
+    Running tasks on a Ray remote cluster
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resources" class="md-nav__link">
     Resources
   </a>
@@ -426,6 +440,22 @@
 
 
 <h1 id="prefect-ray">prefect-ray</h1>
+<p align="center">
+    <a href="https://pypi.python.org/pypi/prefect-ray/" alt="PyPI version">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/prefect-ray?color=0052FF&labelColor=090422"></a>
+    <a href="https://github.com/PrefectHQ/prefect-ray/" alt="Stars">
+        <img src="https://img.shields.io/github/stars/PrefectHQ/prefect-ray?color=0052FF&labelColor=090422" /></a>
+    <a href="https://pepy.tech/badge/prefect-ray/" alt="Downloads">
+        <img src="https://img.shields.io/pypi/dm/prefect-ray?color=0052FF&labelColor=090422" /></a>
+    <a href="https://github.com/PrefectHQ/prefect-ray/pulse" alt="Activity">
+        <img src="https://img.shields.io/github/commit-activity/m/PrefectHQ/prefect-ray?color=0052FF&labelColor=090422" /></a>
+    <br>
+    <a href="https://prefect-community.slack.com" alt="Slack">
+        <img src="https://img.shields.io/badge/slack-join_community-red.svg?color=0052FF&labelColor=090422&logo=slack" /></a>
+    <a href="https://discourse.prefect.io/" alt="Discourse">
+        <img src="https://img.shields.io/badge/discourse-browse_forum-red.svg?color=0052FF&labelColor=090422&logo=discourse" /></a>
+</p>
+
 <h2 id="welcome">Welcome!</h2>
 <p>Prefect integrations with the <a href="https://www.ray.io/">Ray</a> execution framework, a flexible distributed computing framework for Python.</p>
 <p>Provides a <code>RayTaskRunner</code> that enables flows to run tasks requiring parallel execution using Ray.</p>
@@ -527,9 +557,29 @@ Click <a href="https://docs.ray.io/en/master/ray-overview/installation.html#m1-m
 <p>Ray support for non-x86/64 architectures such as ARM/M1 processors with installation from <code>pip</code> alone and will be skipped during installation of Prefect. It is possible to manually install the blocking component with <code>conda</code>. See the <a href="https://docs.ray.io/en/latest/ray-overview/installation.html#m1-mac-apple-silicon-support">Ray documentation</a> for instructions.</p>
 <p>See the <a href="https://docs.ray.io/en/latest/ray-overview/installation.html">Ray installation documentation</a> for further compatibility information.</p>
 </div>
+<h2 id="running-tasks-on-a-ray-remote-cluster">Running tasks on a Ray remote cluster</h2>
+<p>When using the <code>RayTaskRunner</code> with a remote Ray cluster, you may run into issues that are not seen when using a local Ray instance. To resolve these issues, we recommend taking the following steps when working with a remote Ray cluster:</p>
+<ol>
+<li>
+<p>If your task fails with permission or file not found errors, set <code>PREFECT_LOCAL_STORAGE_PATH</code> in your Prefect settings to a path accessible on both the remote cluster and the machine executing the flow:
+<div class="highlight"><pre><span></span><code>prefect config <span class="nb">set</span> <span class="nv">PREFECT_LOCAL_STORAGE_PATH</span><span class="o">=</span><span class="s1">&#39;/tmp/prefect/storage&#39;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>If you get an error stating that the module 'prefect' cannot be found, ensure <code>prefect</code> is installed on the remote cluster, with:
+<div class="highlight"><pre><span></span><code>pip install prefect
+</code></pre></div></p>
+</li>
+<li>
+<p>If you are seeing timeout or other connection errors, double check the address provided to the <code>RayTaskRunner</code>. The address should look similar to: <code>address='ray://&lt;head_node_ip_address&gt;:10001'</code>:
+<div class="highlight"><pre><span></span><code>RayTaskRunner<span class="o">(</span><span class="nv">address</span><span class="o">=</span><span class="s2">&quot;ray://1.23.199.255:10001&quot;</span><span class="o">)</span>
+</code></pre></div></p>
+</li>
+</ol>
 <h2 id="resources">Resources</h2>
 <p>If you encounter and bugs while using <code>prefect-ray</code>, feel free to open an issue in the <a href="https://github.com/PrefectHQ/prefect-ray">prefect-ray</a> repository.</p>
 <p>If you have any questions or issues while using <code>prefect-ray</code>, you can find help in either the <a href="https://discourse.prefect.io/">Prefect Discourse forum</a> or the <a href="https://prefect.io/slack">Prefect Slack community</a>.</p>
+<p>Feel free to ⭐️ or watch <a href="https://github.com/PrefectHQ/prefect-ray"><code>prefect-ray</code></a> for updates too!</p>
 <h2 id="development">Development</h2>
 <p>If you'd like to install a version of <code>prefect-ray</code> for development, clone the repository and perform an editable install with <code>pip</code>:</p>
 <div class="highlight"><pre><span></span><code>git clone https://github.com/PrefectHQ/prefect-ray.git
@@ -599,10 +649,10 @@ pre-commit install
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.48f2be22.min.js"></script>
+      <script src="assets/javascripts/bundle.078830c0.min.js"></script>
       
     
   </body>
