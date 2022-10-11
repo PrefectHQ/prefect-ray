@@ -123,7 +123,7 @@ Note that Ray Client uses the [ray://](https://docs.ray.io/en/master/cluster/ray
 
 When using the `RayTaskRunner` with a remote Ray cluster, you may run into issues that are not seen when using a local Ray instance. To resolve these issues, we recommend taking the following steps when working with a remote Ray cluster:
 
-1. If your task fail with permission or file not found errors, set `PREFECT_LOCAL_STORAGE_PATH` in your Prefect settings to a path accessible on both the remote cluster and the machine executing the flow:
+1. If your task fails with permission or file not found errors, set `PREFECT_LOCAL_STORAGE_PATH` in your Prefect settings to a path accessible on both the remote cluster and the machine executing the flow:
 ```bash
 prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'
 ```
