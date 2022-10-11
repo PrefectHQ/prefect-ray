@@ -135,6 +135,24 @@ Note that Ray Client uses the [ray://](https://docs.ray.io/en/master/cluster/ray
 
     See the [Ray installation documentation](https://docs.ray.io/en/latest/ray-overview/installation.html) for further compatibility information.
 
+## Running tasks on a Ray remote cluster
+
+When using the `RayTaskRunner` with a remote Ray cluster, you may run into issues that are not seen when using a local Ray instance. To resolve these issues, we recommend taking the following steps when working with a remote Ray cluster:
+
+1. If your task fails with permission or file not found errors, set `PREFECT_LOCAL_STORAGE_PATH` in your Prefect settings to a path accessible on both the remote cluster and the machine executing the flow:
+```bash
+prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'
+```
+
+2. If you get an error stating that the module 'prefect' cannot be found, ensure `prefect` is installed on the remote cluster, with:
+```bash
+pip install prefect
+```
+
+3. If you are seeing timeout or other connection errors, double check the address provided to the `RayTaskRunner`. The address should look similar to: `address='ray://<head_node_ip_address>:10001'`:
+```bash
+RayTaskRunner(address="ray://1.23.199.255:10001")
+```
 
 ## Resources
 
