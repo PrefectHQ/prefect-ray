@@ -139,9 +139,38 @@ Note that Ray Client uses the [ray://](https://docs.ray.io/en/master/cluster/ray
 
 When using the `RayTaskRunner` with a remote Ray cluster, you may run into issues that are not seen when using a local Ray instance. To resolve these issues, we recommend taking the following steps when working with a remote Ray cluster:
 
-1. If your task fails with permission or file not found errors, set `PREFECT_LOCAL_STORAGE_PATH` in your Prefect settings to a path accessible on both the remote cluster and the machine executing the flow:
+1. By default, Prefect will not persist any data to the filesystem of the remote ray worker. However, if you want to take advantage of Prefect's caching ability, you will need to configure a remote result storage and persist the results, like shown below:
 ```bash
-prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'
+from typing import List
+
+from prefect import flow, get_run_logger, task
+from prefect.filesystems import S3
+from prefect.tasks import task_input_hash
+from prefect_ray.task_runners import RayTaskRunner
+
+
+@task(cache_key_fn=task_input_hash)
+def say_hello(name: str) -> None:
+    logger = get_run_logger()
+    # this should only show if not cached
+    logger.info(f"hello {name}!")
+    return name
+
+
+@flow(
+    task_runner=RayTaskRunner(
+        address="ray://<instance_public_ip_address>:10001",
+    ),
+    persist_result=True,
+    result_storage=S3(bucket_path="<bucket_path>"),
+)
+def greetings(names: List[str]) -> None:
+    for name in names:
+        say_hello.submit(name)
+
+
+if __name__ == "__main__":
+    greetings(["arthur", "trillian", "ford", "marvin"])
 ```
 
 2. If you get an error stating that the module 'prefect' cannot be found, ensure `prefect` is installed on the remote cluster, with:
@@ -149,7 +178,12 @@ prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'
 pip install prefect
 ```
 
-3. If you are seeing timeout or other connection errors, double check the address provided to the `RayTaskRunner`. The address should look similar to: `address='ray://<head_node_ip_address>:10001'`:
+3. If you get an error stating something like "File system created with scheme 's3' could not be created", double check that the required Python modules are installed on **both local and remote machines**. For example, if using S3 for the remote storage:
+```bash
+pip install s3fs
+```
+
+4. If you are seeing timeout or other connection errors, double check the address provided to the `RayTaskRunner`. The address should look similar to: `address='ray://<head_node_ip_address>:10001'`:
 ```bash
 RayTaskRunner(address="ray://1.23.199.255:10001")
 ```
