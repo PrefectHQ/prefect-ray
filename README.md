@@ -139,7 +139,11 @@ Note that Ray Client uses the [ray://](https://docs.ray.io/en/master/cluster/ray
 
 When using the `RayTaskRunner` with a remote Ray cluster, you may run into issues that are not seen when using a local Ray instance. To resolve these issues, we recommend taking the following steps when working with a remote Ray cluster:
 
-1. By default, Prefect will not persist any data to the filesystem of the remote ray worker. However, if you want to take advantage of Prefect's caching ability, you will need to configure a remote result storage and persist the results, like shown below:
+1. By default, Prefect will not persist any data to the filesystem of the remote ray worker. However, if you want to take advantage of Prefect's caching ability, you will need to configure a remote result storage to persist results across task runs. 
+
+We recommend using the [Prefect UI to configure a storage block](https://docs.prefect.io/ui/blocks/) to use for remote results storage.
+
+Here's an example of a flow that uses caching and remote result storage:
 ```python
 from typing import List
 
@@ -149,10 +153,11 @@ from prefect.tasks import task_input_hash
 from prefect_ray.task_runners import RayTaskRunner
 
 
+# The result of this task will be cached in the configured result storage
 @task(cache_key_fn=task_input_hash)
 def say_hello(name: str) -> None:
     logger = get_run_logger()
-    # this should only show if not cached
+    # This log statement will print only on the first run. Subsequent runs will be cached.
     logger.info(f"hello {name}!")
     return name
 
@@ -178,7 +183,7 @@ if __name__ == "__main__":
 pip install prefect
 ```
 
-3. If you get an error stating something like "File system created with scheme 's3' could not be created", double check that the required Python modules are installed on **both local and remote machines**. For example, if using S3 for the remote storage:
+3. If you get an error with a message similar to "File system created with scheme 's3' could not be created", ensure the required Python modules are installed on **both local and remote machines**. The required prerequisite modules can be found in the [Prefect documentation](https://docs.prefect.io/tutorials/storage/#prerequisites). For example, if using S3 for the remote storage:
 ```bash
 pip install s3fs
 ```
