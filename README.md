@@ -139,9 +139,43 @@ Note that Ray Client uses the [ray://](https://docs.ray.io/en/master/cluster/ray
 
 When using the `RayTaskRunner` with a remote Ray cluster, you may run into issues that are not seen when using a local Ray instance. To resolve these issues, we recommend taking the following steps when working with a remote Ray cluster:
 
-1. If your task fails with permission or file not found errors, set `PREFECT_LOCAL_STORAGE_PATH` in your Prefect settings to a path accessible on both the remote cluster and the machine executing the flow:
-```bash
-prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'
+1. By default, Prefect will not persist any data to the filesystem of the remote ray worker. However, if you want to take advantage of Prefect's caching ability, you will need to configure a remote result storage to persist results across task runs. 
+
+We recommend using the [Prefect UI to configure a storage block](https://docs.prefect.io/ui/blocks/) to use for remote results storage.
+
+Here's an example of a flow that uses caching and remote result storage:
+```python
+from typing import List
+
+from prefect import flow, get_run_logger, task
+from prefect.filesystems import S3
+from prefect.tasks import task_input_hash
+from prefect_ray.task_runners import RayTaskRunner
+
+
+# The result of this task will be cached in the configured result storage
+@task(cache_key_fn=task_input_hash)
+def say_hello(name: str) -> None:
+    logger = get_run_logger()
+    # This log statement will print only on the first run. Subsequent runs will be cached.
+    logger.info(f"hello {name}!")
+    return name
+
+
+@flow(
+    task_runner=RayTaskRunner(
+        address="ray://<instance_public_ip_address>:10001",
+    ),
+    # Using an S3 block that has already been created via the Prefect UI
+    result_storage="s3/my-result-storage",
+)
+def greetings(names: List[str]) -> None:
+    for name in names:
+        say_hello.submit(name)
+
+
+if __name__ == "__main__":
+    greetings(["arthur", "trillian", "ford", "marvin"])
 ```
 
 2. If you get an error stating that the module 'prefect' cannot be found, ensure `prefect` is installed on the remote cluster, with:
@@ -149,7 +183,12 @@ prefect config set PREFECT_LOCAL_STORAGE_PATH='/tmp/prefect/storage'
 pip install prefect
 ```
 
-3. If you are seeing timeout or other connection errors, double check the address provided to the `RayTaskRunner`. The address should look similar to: `address='ray://<head_node_ip_address>:10001'`:
+3. If you get an error with a message similar to "File system created with scheme 's3' could not be created", ensure the required Python modules are installed on **both local and remote machines**. The required prerequisite modules can be found in the [Prefect documentation](https://docs.prefect.io/tutorials/storage/#prerequisites). For example, if using S3 for the remote storage:
+```bash
+pip install s3fs
+```
+
+4. If you are seeing timeout or other connection errors, double check the address provided to the `RayTaskRunner`. The address should look similar to: `address='ray://<head_node_ip_address>:10001'`:
 ```bash
 RayTaskRunner(address="ray://1.23.199.255:10001")
 ```
