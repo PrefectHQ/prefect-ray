@@ -167,7 +167,7 @@ def say_hello(name: str) -> None:
         address="ray://<instance_public_ip_address>:10001",
     ),
     # Using an S3 block that has already been created via the Prefect UI
-    result_storage="s3/my_result_storage",
+    result_storage="s3/my-result-storage",
 )
 def greetings(names: List[str]) -> None:
     for name in names:
