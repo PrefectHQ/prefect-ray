@@ -166,8 +166,8 @@ def say_hello(name: str) -> None:
     task_runner=RayTaskRunner(
         address="ray://<instance_public_ip_address>:10001",
     ),
-    persist_result=True,
-    result_storage=S3(bucket_path="<bucket_path>"),
+    # Using an S3 block that has already been created via the Prefect UI
+    result_storage="s3/my_result_storage",
 )
 def greetings(names: List[str]) -> None:
     for name in names:
