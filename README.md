@@ -197,7 +197,7 @@ RayTaskRunner(address="ray://1.23.199.255:10001")
 
 The `resources` context can be used to control the task’s resource requirements.
 
-For example, we can set the number of CPUs and GPUs to use in a flow:
+For example, we can set the number of CPUs and GPUs to use for the `process` task:
 
 ```python
 from prefect import flow, task
