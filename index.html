@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://prefecthq.github.io/prefect-ray/">
       
       <link rel="icon" href="img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.5.6">
+      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.6">
     
     
       
@@ -560,14 +560,51 @@ Click <a href="https://docs.ray.io/en/master/ray-overview/installation.html#m1-m
 <h2 id="running-tasks-on-a-ray-remote-cluster">Running tasks on a Ray remote cluster</h2>
 <p>When using the <code>RayTaskRunner</code> with a remote Ray cluster, you may run into issues that are not seen when using a local Ray instance. To resolve these issues, we recommend taking the following steps when working with a remote Ray cluster:</p>
 <ol>
-<li>
-<p>If your task fails with permission or file not found errors, set <code>PREFECT_LOCAL_STORAGE_PATH</code> in your Prefect settings to a path accessible on both the remote cluster and the machine executing the flow:
-<div class="highlight"><pre><span></span><code>prefect config <span class="nb">set</span> <span class="nv">PREFECT_LOCAL_STORAGE_PATH</span><span class="o">=</span><span class="s1">&#39;/tmp/prefect/storage&#39;</span>
+<li>By default, Prefect will not persist any data to the filesystem of the remote ray worker. However, if you want to take advantage of Prefect's caching ability, you will need to configure a remote result storage to persist results across task runs. </li>
+</ol>
+<p>We recommend using the <a href="https://docs.prefect.io/ui/blocks/">Prefect UI to configure a storage block</a> to use for remote results storage.</p>
+<p>Here's an example of a flow that uses caching and remote result storage:
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span> <span class="nn">prefect.filesystems</span> <span class="kn">import</span> <span class="n">S3</span>
+<span class="kn">from</span> <span class="nn">prefect.tasks</span> <span class="kn">import</span> <span class="n">task_input_hash</span>
+<span class="kn">from</span> <span class="nn">prefect_ray.task_runners</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
+
+
+<span class="c1"># The result of this task will be cached in the configured result storage</span>
+<span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">task_input_hash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="c1"># This log statement will print only on the first run. Subsequent runs will be cached.</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">name</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span>
+    <span class="n">task_runner</span><span class="o">=</span><span class="n">RayTaskRunner</span><span class="p">(</span>
+        <span class="n">address</span><span class="o">=</span><span class="s2">&quot;ray://&lt;instance_public_ip_address&gt;:10001&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="c1"># Using an S3 block that has already been created via the Prefect UI</span>
+    <span class="n">result_storage</span><span class="o">=</span><span class="s2">&quot;s3/my-result-storage&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">greetings</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">greetings</span><span class="p">([</span><span class="s2">&quot;arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;trillian&quot;</span><span class="p">,</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;marvin&quot;</span><span class="p">])</span>
 </code></pre></div></p>
-</li>
+<ol>
 <li>
 <p>If you get an error stating that the module 'prefect' cannot be found, ensure <code>prefect</code> is installed on the remote cluster, with:
 <div class="highlight"><pre><span></span><code>pip install prefect
+</code></pre></div></p>
+</li>
+<li>
+<p>If you get an error with a message similar to "File system created with scheme 's3' could not be created", ensure the required Python modules are installed on <strong>both local and remote machines</strong>. The required prerequisite modules can be found in the <a href="https://docs.prefect.io/tutorials/storage/#prerequisites">Prefect documentation</a>. For example, if using S3 for the remote storage:
+<div class="highlight"><pre><span></span><code>pip install s3fs
 </code></pre></div></p>
 </li>
 <li>
