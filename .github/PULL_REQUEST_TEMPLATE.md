@@ -1,5 +1,5 @@
 <!-- 
-Thanks for opening a pull request to {{ cookiecutter.collection_name }} 🎉!
+Thanks for opening a pull request to prefect-ray 🎉!
 
 We've got a few requests to help us review contributions:
 
@@ -27,6 +27,6 @@ A code blurb is best. Changes to features should include an example that is exec
 <!-- These boxes may be checked after opening the pull request. -->
 
 - [ ] This pull request references any related issue by including "Closes #<ISSUE_NUMBER>"
-	- If no issue exists and your change is not a small fix, please [create an issue](https://github.com/{{ cookiecutter.github_organization }}/{{ cookiecutter.collection_name }}/issues/new/choose) first.
+	- If no issue exists and your change is not a small fix, please [create an issue](https://github.com/PrefectHQ/prefect-ray/issues/new/choose) first.
 - [ ] This pull request includes tests or only affects documentation.
-- [ ] Summarized PR's changes in [CHANGELOG.md](https://github.com/{{ cookiecutter.github_organization }}/{{ cookiecutter.collection_name }}/blob/main/CHANGELOG.md)
+- [ ] Summarized PR's changes in [CHANGELOG.md](https://github.com/PrefectHQ/prefect-ray/blob/main/CHANGELOG.md)
