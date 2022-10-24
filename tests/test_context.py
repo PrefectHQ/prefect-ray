@@ -1,26 +1,33 @@
-from prefect_ray.context import ResourcesContext, resources
+from prefect_ray.context import RemoteOptionsContext, remote_options
 
 
-def test_resources_context():
-    input_resources = {"num_cpus": 4}
-    current_resources = ResourcesContext(
-        current_resources=input_resources
-    ).current_resources
-    assert current_resources == input_resources
+def test_remote_options_context():
+    input_remote_options = {"num_cpus": 4}
+    current_remote_options = RemoteOptionsContext(
+        current_remote_options=input_remote_options
+    ).current_remote_options
+    assert current_remote_options == input_remote_options
 
 
-def test_resources_context_get():
-    current_resources = ResourcesContext.get().current_resources
-    assert current_resources == {}
+def test_remote_options_context_get():
+    current_remote_options = RemoteOptionsContext.get().current_remote_options
+    assert current_remote_options == {}
 
 
-def test_resources():
-    with resources(num_cpus=4, num_gpus=None):
-        current_resources = ResourcesContext.get().current_resources
-        assert current_resources == {"num_cpus": 4, "num_gpus": None}
+def test_remote_options():
+    with remote_options(num_cpus=4, num_gpus=None):
+        current_remote_options = RemoteOptionsContext.get().current_remote_options
+        assert current_remote_options == {"num_cpus": 4, "num_gpus": None}
 
 
-def test_resources_empty():
-    with resources():
-        current_resources = ResourcesContext.get().current_resources
-        assert current_resources == {}
+def test_remote_options_empty():
+    with remote_options():
+        current_remote_options = RemoteOptionsContext.get().current_remote_options
+        assert current_remote_options == {}
+
+
+def test_remote_options_override():
+    with remote_options(num_cpus=2, num_gpus=1):
+        with remote_options(num_cpus=4, num_gpus=2):
+            current_remote_options = RemoteOptionsContext.get().current_remote_options
+            assert current_remote_options == {"num_cpus": 4, "num_gpus": 2}

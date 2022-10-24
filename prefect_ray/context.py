@@ -9,39 +9,42 @@ from prefect.context import ContextModel, ContextVar
 from pydantic import Field
 
 
-class ResourcesContext(ContextModel):
+class RemoteOptionsContext(ContextModel):
     """
-    The context for Ray resources management.
+    The context for Ray remote_options management.
 
     Attributes:
-        current_resources: A set of current resources in the context.
+        current_remote_options: A set of current remote_options in the context.
     """
 
-    current_resources: Dict[str, Any] = Field(default_factory=dict)
+    current_remote_options: Dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
-    def get(cls) -> "ResourcesContext":
-        """Return an empty `ResourcesContext` instead of `None` if no context exists."""
-        return cls.__var__.get(ResourcesContext())
+    def get(cls) -> "RemoteOptionsContext":
+        """
+        Return an empty `RemoteOptionsContext`
+        instead of `None` if no context exists.
+        """
+        return cls.__var__.get(RemoteOptionsContext())
 
-    __var__ = ContextVar("resources")
+    __var__ = ContextVar("remote_options")
 
 
 @contextmanager
-def resources(**new_resources: Dict[str, Any]) -> Dict[str, Any]:
+def remote_options(**new_remote_options: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Context manager to add resources to flow and task run calls.
-    Resources are always combined with any existing resources.
+    Context manager to add remote_options to flow and task run calls.
+    RemoteOptions are always combined with any existing remote_options.
 
     Yields:
-        The current set of resources.
+        The current set of remote_options.
 
     Examples:
         Use 4 CPUs and 2 GPUs for the `process` task:
         ```python
         from prefect import flow, task
         from prefect_ray.task_runners import RayTaskRunner
-        from prefect_ray.context import resources
+        from prefect_ray.context import remote_options
 
         @task
         def process(x):
@@ -50,11 +53,12 @@ def resources(**new_resources: Dict[str, Any]) -> Dict[str, Any]:
         @flow(task_runner=RayTaskRunner())
         def my_flow():
             # equivalent to setting @ray.remote(num_cpus=4, num_gpus=2)
-            with resources(num_cpus=4, num_gpus=2):
+            with remote_options(num_cpus=4, num_gpus=2):
                 process.submit(42)
         ```
     """
-    current_resources = ResourcesContext.get().current_resources
-    new_resources.update(**current_resources)
-    with ResourcesContext(current_resources=new_resources):
+    current_remote_options = RemoteOptionsContext.get().current_remote_options
+    with RemoteOptionsContext(
+        current_remote_options={**current_remote_options, **new_remote_options}
+    ):
         yield

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `resources` context manager for managing Ray remote resources for a task - [#54](https://github.com/PrefectHQ/prefect-ray/pull/54)
+- `remote_options` context manager for managing Ray remote options for a task - [#54](https://github.com/PrefectHQ/prefect-ray/pull/54)
 
 ### Changed
 
