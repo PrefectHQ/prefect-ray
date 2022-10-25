@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `remote_options` context manager for managing Ray remote options for a task - [#54](https://github.com/PrefectHQ/prefect-ray/pull/54)
+
 ### Changed
 
 ### Deprecated
@@ -24,17 +26,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Released September 8th, 2022
 
 ### Added
-- `pickle5` requirement for Python < 3.8 users [#30](https://github.com/PrefectHQ/prefect-ray/pull/30).
+- `pickle5` requirement for Python < 3.8 users - [#30](https://github.com/PrefectHQ/prefect-ray/pull/30).
 
 ### Fixed
-- Updated `RayTaskRunner` to be compatible with the updated `TaskRunner` interface in the Prefect Core library (v2.3.0) [#35](https://github.com/PrefectHQ/prefect-ray/pull/35)
+- Updated `RayTaskRunner` to be compatible with the updated `TaskRunner` interface in the Prefect Core library (v2.3.0) - [#35](https://github.com/PrefectHQ/prefect-ray/pull/35)
 
 ## 0.1.4
 
 Released on August 2nd, 2022.
 
 ### Added
-- `pickle5` requirement for Python < 3.8 users [#30](https://github.com/PrefectHQ/prefect-ray/pull/30).
+- `pickle5` requirement for Python < 3.8 users - [#30](https://github.com/PrefectHQ/prefect-ray/pull/30).
 
 ## 0.1.3
 
@@ -42,8 +44,8 @@ Released on July 26th, 2022.
 
 ### Changed
 
-- Dropping x86_64 requirement so ray can be automatically installed [#29](https://github.com/PrefectHQ/prefect-ray/pull/29).
-- Examples to better exemplify parallelism [#29](https://github.com/PrefectHQ/prefect-ray/pull/29).
+- Dropping x86_64 requirement so ray can be automatically installed - [#29](https://github.com/PrefectHQ/prefect-ray/pull/29).
+- Examples to better exemplify parallelism - [#29](https://github.com/PrefectHQ/prefect-ray/pull/29).
 
 ## 0.1.2
 

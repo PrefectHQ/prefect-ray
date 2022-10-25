@@ -193,6 +193,29 @@ pip install s3fs
 RayTaskRunner(address="ray://1.23.199.255:10001")
 ```
 
+## Specifying remote options
+
+The `remote_options` context can be used to control the task’s remote options.
+
+For example, we can set the number of CPUs and GPUs to use for the `process` task:
+
+```python
+from prefect import flow, task
+from prefect_ray.task_runners import RayTaskRunner
+from prefect_ray.context import remote_options
+
+@task
+def process(x):
+    return x + 1
+
+
+@flow(task_runner=RayTaskRunner())
+def my_flow():
+    # equivalent to setting @ray.remote(num_cpus=4, num_gpus=2)
+    with remote_options(num_cpus=4, num_gpus=2):
+        process.submit(42)
+```
+
 ## Resources
 
 If you encounter and bugs while using `prefect-ray`, feel free to open an issue in the [prefect-ray](https://github.com/PrefectHQ/prefect-ray) repository.
