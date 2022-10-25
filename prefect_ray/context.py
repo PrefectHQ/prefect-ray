@@ -33,11 +33,12 @@ class RemoteOptionsContext(ContextModel):
 @contextmanager
 def remote_options(**new_remote_options: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Context manager to add remote_options to flow and task run calls.
-    RemoteOptions are always combined with any existing remote_options.
+    Context manager to add keyword arguments to Ray `@remote` calls
+    for task runs. If contexts are nested, new options are merged with options
+    in the outer context. If a key is present in both, the new option will be used.
 
     Yields:
-        The current set of remote_options.
+        The current set of remote options.
 
     Examples:
         Use 4 CPUs and 2 GPUs for the `process` task:
