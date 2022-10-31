@@ -149,9 +149,9 @@ class RayTaskRunner(BaseTaskRunner):
         remote_options = RemoteOptionsContext.get().current_remote_options
         # Ray does not support the submission of async functions and we must create a
         # sync entrypoint
-        self._ray_refs[key] = ray.remote(
+        self._ray_refs[key] = ray.remote(**remote_options)(
             sync_compatible(call.func)
-        ).options(**remote_options).remote(**call_kwargs)
+        ).remote(**call_kwargs)
 
     def _optimize_futures(self, expr):
         """
