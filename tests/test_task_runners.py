@@ -239,8 +239,8 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
 
         @flow(task_runner=RayTaskRunner())
         def my_flow():
-            # equivalent to setting @ray.remote(num_cpus=4, num_gpus=2)
-            with remote_options(num_cpus=4, num_gpus=2):
+            # equivalent to setting @ray.remote(max_calls=1)
+            with remote_options(max_calls=1):
                 process.submit(42)
 
         my_flow()
