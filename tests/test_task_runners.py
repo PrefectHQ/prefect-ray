@@ -18,6 +18,7 @@ from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
 
 import tests
 from prefect_ray import RayTaskRunner
+from prefect_ray.context import remote_options
 
 
 @pytest.fixture(scope="session")
@@ -230,3 +231,16 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
 
         base_flow()
         assert tmp_file.read_text() == "d"
+
+    def test_ray_options(self):
+        @task
+        def process(x):
+            return x + 1
+
+        @flow(task_runner=RayTaskRunner())
+        def my_flow():
+            # equivalent to setting @ray.remote(max_calls=1)
+            with remote_options(max_calls=1):
+                process.submit(42)
+
+        my_flow()
