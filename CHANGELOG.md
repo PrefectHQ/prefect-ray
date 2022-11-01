@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `remote_options` context manager for managing Ray remote options for a task - [#54](https://github.com/PrefectHQ/prefect-ray/pull/54)
-
 ### Changed
 
 ### Deprecated
@@ -20,6 +18,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+## 0.2.1
+
+Released November 1st, 2022
+
+### Added
+
+- `remote_options` context manager for managing Ray remote options for a task - [#54](https://github.com/PrefectHQ/prefect-ray/pull/54)
+
+### Fixed
+
+- `remote_options` errors, stemmed from being called at an improper location - [#56](https://github.com/PrefectHQ/prefect-ray/pull/56)
 
 ## 0.2.0
 
