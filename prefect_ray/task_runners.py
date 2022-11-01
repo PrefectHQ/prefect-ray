@@ -153,9 +153,9 @@ class RayTaskRunner(BaseTaskRunner):
             ray_decorator = ray.remote(**remote_options)
         else:
             ray_decorator = ray.remote
-        self._ray_refs[key] = ray_decorator(
-            sync_compatible(call.func)
-        ).remote(**call_kwargs)
+        self._ray_refs[key] = ray_decorator(sync_compatible(call.func)).remote(
+            **call_kwargs
+        )
 
     def _optimize_futures(self, expr):
         """
