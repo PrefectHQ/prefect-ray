@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://prefecthq.github.io/prefect-ray/">
       
       <link rel="icon" href="img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.6">
+      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
@@ -295,6 +295,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#specifying-remote-options" class="md-nav__link">
+    Specifying remote options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resources" class="md-nav__link">
     Resources
   </a>
@@ -401,6 +408,13 @@
         <li class="md-nav__item">
   <a href="#running-tasks-on-a-ray-remote-cluster" class="md-nav__link">
     Running tasks on a Ray remote cluster
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-remote-options" class="md-nav__link">
+    Specifying remote options
   </a>
   
 </li>
@@ -613,6 +627,24 @@ Click <a href="https://docs.ray.io/en/master/ray-overview/installation.html#m1-m
 </code></pre></div></p>
 </li>
 </ol>
+<h2 id="specifying-remote-options">Specifying remote options</h2>
+<p>The <code>remote_options</code> context can be used to control the task’s remote options.</p>
+<p>For example, we can set the number of CPUs and GPUs to use for the <code>process</code> task:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span> <span class="nn">prefect_ray.task_runners</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
+<span class="kn">from</span> <span class="nn">prefect_ray.context</span> <span class="kn">import</span> <span class="n">remote_options</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">RayTaskRunner</span><span class="p">())</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+    <span class="c1"># equivalent to setting @ray.remote(num_cpus=4, num_gpus=2)</span>
+    <span class="k">with</span> <span class="n">remote_options</span><span class="p">(</span><span class="n">num_cpus</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_gpus</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">process</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="resources">Resources</h2>
 <p>If you encounter and bugs while using <code>prefect-ray</code>, feel free to open an issue in the <a href="https://github.com/PrefectHQ/prefect-ray">prefect-ray</a> repository.</p>
 <p>If you have any questions or issues while using <code>prefect-ray</code>, you can find help in either the <a href="https://discourse.prefect.io/">Prefect Discourse forum</a> or the <a href="https://prefect.io/slack">Prefect Slack community</a>.</p>
@@ -686,10 +718,10 @@ pre-commit install
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.078830c0.min.js"></script>
+      <script src="assets/javascripts/bundle.8492ddcf.min.js"></script>
       
     
   </body>
