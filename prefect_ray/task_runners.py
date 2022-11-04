@@ -84,6 +84,8 @@ from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
 from prefect.utilities.asyncutils import sync_compatible
 from prefect.utilities.collections import visit_collection
 
+from prefect_ray.context import RemoteOptionsContext
+
 
 class RayTaskRunner(BaseTaskRunner):
     """
@@ -144,9 +146,14 @@ class RayTaskRunner(BaseTaskRunner):
 
         call_kwargs = self._optimize_futures(call.keywords)
 
+        remote_options = RemoteOptionsContext.get().current_remote_options
         # Ray does not support the submission of async functions and we must create a
         # sync entrypoint
-        self._ray_refs[key] = ray.remote(sync_compatible(call.func)).remote(
+        if remote_options:
+            ray_decorator = ray.remote(**remote_options)
+        else:
+            ray_decorator = ray.remote
+        self._ray_refs[key] = ray_decorator(sync_compatible(call.func)).remote(
             **call_kwargs
         )
 
