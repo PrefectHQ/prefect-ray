@@ -8,13 +8,16 @@ from functools import partial
 from uuid import uuid4
 
 import prefect
+import prefect.engine
 import pytest
 import ray
 import ray.cluster_utils
-from prefect import flow, task
+from prefect import flow, get_run_logger, task
 from prefect.states import State
 from prefect.testing.fixtures import hosted_orion_api, use_hosted_orion  # noqa: F401
 from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
+from prefect.testing.utilities import exceptions_equal
+from ray.exceptions import TaskCancelledError
 
 import tests
 from prefect_ray import RayTaskRunner
@@ -211,6 +214,51 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
             assert state is not None, "wait timed out"
             assert isinstance(state, State), "wait should return a state"
             assert state.name == "Crashed"
+
+    @pytest.mark.parametrize(
+        "exceptions",
+        [
+            (KeyboardInterrupt(), TaskCancelledError),
+            (ValueError("test"), ValueError),
+        ],
+    )
+    async def test_exception_to_crashed_state_in_flow_run(
+        self, exceptions, task_runner, monkeypatch
+    ):
+
+        (raised_exception, state_exception_type) = exceptions
+
+        async def throws_exception_before_task_begins(
+            task, task_run, parameters, wait_for, result_factory, settings
+        ):
+            """
+            Simulates an exception occurring while a remote task runner is attempting
+            to unpickle and run a Prefect task.
+            """
+            raise raised_exception
+
+        monkeypatch.setattr(
+            prefect.engine, "begin_task_run", throws_exception_before_task_begins
+        )
+
+        @task()
+        def test_task():
+            logger = get_run_logger()
+            logger.info("Ray should raise an exception before this task runs.")
+
+        @flow(task_runner=task_runner)
+        def test_flow():
+            future = test_task.submit()
+            future.wait(10)
+
+        # ensure that the type of exception raised by the flow matches the type of
+        # exception we expected the task runner to receive.
+        with pytest.raises(state_exception_type) as exc:
+            test_flow()
+            # If Ray passes the same exception type back, it should pass
+            # the equality check
+            if type(raised_exception) == state_exception_type:
+                assert exceptions_equal(raised_exception, exc)
 
     def test_flow_and_subflow_both_with_task_runner(self, task_runner, tmp_file):
         @task
