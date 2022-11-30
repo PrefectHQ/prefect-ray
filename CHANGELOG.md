@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Updated `RayTaskRunner` to handle task exceptions correctly in Prefect >= 2.6.0 - [#60](https://github.com/PrefectHQ/prefect-ray/pull/60)
+
 ### Security
 
 ## 0.2.1
