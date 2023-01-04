@@ -83,6 +83,7 @@ from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
 from prefect.utilities.asyncutils import sync_compatible
 from prefect.utilities.collections import visit_collection
+from ray.exceptions import RayTaskError
 
 from prefect_ray.context import RemoteOptionsContext
 
@@ -185,8 +186,12 @@ class RayTaskRunner(BaseTaskRunner):
             # avoid blocking the event loop
             try:
                 result = await ref
+            except RayTaskError as exc:
+                # unwrap the original exception that caused task failure, except for
+                # KeyboardInterrupt, which unwraps as TaskCancelledError
+                result = await exception_to_crashed_state(exc.cause)
             except BaseException as exc:
-                result = exception_to_crashed_state(exc)
+                result = await exception_to_crashed_state(exc)
 
         return result
 
