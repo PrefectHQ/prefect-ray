@@ -229,7 +229,7 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         (raised_exception, state_exception_type) = exceptions
 
         async def throws_exception_before_task_begins(
-            task, task_run, parameters, wait_for, result_factory, settings
+            task, task_run, parameters, wait_for, result_factory, settings, **kwds
         ):
             """
             Simulates an exception occurring while a remote task runner is attempting
