@@ -1,3 +1,3 @@
-prefect>=2.6.0
+prefect @ git+https://github.com/prefecthq/prefect.git@task_runner_test_suite_quote
 ray[default] >= 1.12.0; python_version >= '3.7' and python_version < '3.10'
 pickle5 >= 0.0.11; python_version < '3.8'
