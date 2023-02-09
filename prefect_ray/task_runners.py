@@ -83,9 +83,8 @@ from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
 from prefect.utilities.asyncutils import sync_compatible
 from prefect.utilities.collections import visit_collection
-from ray.exceptions import RayTaskError
-
 from prefect_ray.context import RemoteOptionsContext
+from ray.exceptions import RayTaskError
 
 
 class RayTaskRunner(BaseTaskRunner):
@@ -154,8 +153,8 @@ class RayTaskRunner(BaseTaskRunner):
             ray_decorator = ray.remote(**remote_options)
         else:
             ray_decorator = ray.remote
-        self._ray_refs[key] = ray_decorator(sync_compatible(call.func)).remote(
-            **call_kwargs
+        self._ray_refs[key] = ray_decorator(self._run_prefect_task).remote(
+            sync_compatible(call.func), **call_kwargs
         )
 
     def _optimize_futures(self, expr):
@@ -170,11 +169,23 @@ class RayTaskRunner(BaseTaskRunner):
             if isinstance(expr, PrefectFuture):
                 ray_future = self._ray_refs.get(expr.key)
                 if ray_future is not None:
-                    return ray.get(ray_future)
+                    return ray_future
             # Fallback to return the expression unaltered
             return expr
 
         return visit_collection(expr, visit_fn=visit_fn, return_data=True)
+
+    def _run_prefect_task(func, *args, **kwargs):
+        """
+        Resolves Ray futures before calling the actual Prefect task function.
+        """
+        def visit_fn(expr):
+            if isinstance(expr, ray.ObjectRef):
+                return ray.get(expr)
+            return expr
+        kwargs = visit_collection(kwargs, visit_fn=visit_fn, return_data=True)
+
+        return func(*args, **kwargs)
 
     async def wait(self, key: UUID, timeout: float = None) -> Optional[State]:
         ref = self._get_ray_ref(key)
