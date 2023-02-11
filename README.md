@@ -1,6 +1,8 @@
 # prefect-ray
 
 <p align="center">
+    <!--- Insert a cover image here -->
+    <!--- <br> -->
     <a href="https://pypi.python.org/pypi/prefect-ray/" alt="PyPI version">
         <img alt="PyPI" src="https://img.shields.io/pypi/v/prefect-ray?color=0052FF&labelColor=090422"></a>
     <a href="https://github.com/PrefectHQ/prefect-ray/" alt="Stars">
