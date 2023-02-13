@@ -159,11 +159,10 @@ class RayTaskRunner(BaseTaskRunner):
         )
 
     def _exchange_prefect_for_ray_futures(self, kwargs_prefect_futures):
-        """
-        Exchanges Prefect futures for Ray futures.
-        """
+        """Exchanges Prefect futures for Ray futures."""
 
         def exchange_prefect_for_ray_future(expr):
+            """Exchanges Prefect future for Ray future."""
             if isinstance(expr, PrefectFuture):
                 ray_future = self._ray_refs.get(expr.key)
                 if ray_future is not None:
@@ -180,11 +179,10 @@ class RayTaskRunner(BaseTaskRunner):
 
     @staticmethod
     def _run_prefect_task(func, *args, **kwargs):
-        """
-        Resolves Ray futures before calling the actual Prefect task function.
-        """
+        """Resolves Ray futures before calling the actual Prefect task function."""
 
         def resolve_ray_future(expr):
+            """Resolves Ray future."""
             if isinstance(expr, ray.ObjectRef):
                 return ray.get(expr)
             return expr
