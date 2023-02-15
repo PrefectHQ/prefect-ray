@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Released on Februrary 15th, 2023
 
-### Changed
+### Fixed
 
 - Resolve Ray Futures Decentralized & Concurrently - [#69](https://github.com/PrefectHQ/prefect-ray/pull/69)
 
