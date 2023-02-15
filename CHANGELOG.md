@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.2.3
+
+Released on Februrary 15th, 2023
+
+### Changed
+
+- Resolve Ray Futures Decentralized & Concurrently - [#69](https://github.com/PrefectHQ/prefect-ray/pull/69)
+
 ## 0.2.2
 
 Released on December 1st, 2022
