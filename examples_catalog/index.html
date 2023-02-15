@@ -8,21 +8,23 @@
       
       
       
+        <link rel="canonical" href="https://prefecthq.github.io/prefect-ray/examples_catalog/">
       
       
-      <link rel="icon" href="/prefect-ray/img/favicon.ico">
+      
+      <link rel="icon" href="../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.12">
     
     
       
-        <title>prefect-ray</title>
+        <title>Examples Catalog - prefect-ray</title>
       
     
     
-      <link rel="stylesheet" href="/prefect-ray/assets/stylesheets/main.0d440cfe.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.0d440cfe.min.css">
       
         
-        <link rel="stylesheet" href="/prefect-ray/assets/stylesheets/palette.2505c338.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
       
       
 
@@ -38,11 +40,11 @@
       
     
     
-      <link rel="stylesheet" href="/prefect-ray/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="/prefect-ray/stylesheets/extra.css">
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("/prefect-ray/",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -82,6 +84,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#examples-catalog" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -92,9 +99,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/prefect-ray/." title="prefect-ray" class="md-header__button md-logo" aria-label="prefect-ray" data-md-component="logo">
+    <a href=".." title="prefect-ray" class="md-header__button md-logo" aria-label="prefect-ray" data-md-component="logo">
       
-  <img src="/prefect-ray/img/prefect-logo-mark-solid-white-500.png" alt="logo">
+  <img src="../img/prefect-logo-mark-solid-white-500.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -110,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Examples Catalog
             
           </span>
         </div>
@@ -217,9 +224,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/prefect-ray/." title="prefect-ray" class="md-nav__button md-logo" aria-label="prefect-ray" data-md-component="logo">
+    <a href=".." title="prefect-ray" class="md-nav__button md-logo" aria-label="prefect-ray" data-md-component="logo">
       
-  <img src="/prefect-ray/img/prefect-logo-mark-solid-white-500.png" alt="logo">
+  <img src="../img/prefect-logo-mark-solid-white-500.png" alt="logo">
 
     </a>
     prefect-ray
@@ -247,7 +254,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/prefect-ray/." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         Home
       </a>
     </li>
@@ -262,7 +269,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/prefect-ray/task_runners/" class="md-nav__link">
+      <a href="../task_runners/" class="md-nav__link">
         Task Runners
       </a>
     </li>
@@ -286,6 +293,30 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context-module" class="md-nav__link">
+    Context Module
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-runners-module" class="md-nav__link">
+    Task Runners Module
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -297,8 +328,108 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+
+<h1 id="examples-catalog">Examples Catalog</h1>
+<p>Below is a list of examples for <code>prefect-ray</code>.</p>
+<h2 id="context-module">[Context Module][prefect_ray.context]</h2>
+<p>Use 4 CPUs and 2 GPUs for the <code>process</code> task:
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span> <span class="nn">prefect_ray.task_runners</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
+<span class="kn">from</span> <span class="nn">prefect_ray.context</span> <span class="kn">import</span> <span class="n">remote_options</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">RayTaskRunner</span><span class="p">())</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+    <span class="c1"># equivalent to setting @ray.remote(num_cpus=4, num_gpus=2)</span>
+    <span class="k">with</span> <span class="n">remote_options</span><span class="p">(</span><span class="n">num_cpus</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_gpus</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">process</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</code></pre></div></p>
+<h2 id="task-runners-module"><a class="autorefs autorefs-internal" href="../task_runners/#prefect_ray.task_runners">Task Runners Module</a></h2>
+<p>Using a temporary local ray cluster:
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect_ray.task_runners</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">RayTaskRunner</span><span class="p">())</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+    <span class="o">...</span>
+</code></pre></div>
+Connecting to an existing ray instance:
+<div class="highlight"><pre><span></span><code><span class="n">RayTaskRunner</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="s2">&quot;ray://192.0.2.255:8786&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">count_to</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+        <span class="n">shout</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">count_to</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># outputs</span>
+<span class="c1">#0</span>
+<span class="c1">#1</span>
+<span class="c1">#2</span>
+<span class="c1">#3</span>
+<span class="c1">#4</span>
+<span class="c1">#5</span>
+<span class="c1">#6</span>
+<span class="c1">#7</span>
+<span class="c1">#8</span>
+<span class="c1">#9</span>
+</code></pre></div></p>
+<p>Switching to a <code>RayTaskRunner</code>:
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span> <span class="nn">prefect_ray</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">RayTaskRunner</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">count_to</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+        <span class="n">shout</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">count_to</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># outputs</span>
+<span class="c1">#3</span>
+<span class="c1">#7</span>
+<span class="c1">#2</span>
+<span class="c1">#6</span>
+<span class="c1">#4</span>
+<span class="c1">#0</span>
+<span class="c1">#1</span>
+<span class="c1">#5</span>
+<span class="c1">#8</span>
+<span class="c1">#9</span>
+</code></pre></div></p>
+
+
+  
+
+
+
+
+                
               </article>
             </div>
           
@@ -433,10 +564,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "/prefect-ray/", "features": ["content.code.copy", "content.code.annotate"], "search": "/prefect-ray/assets/javascripts/workers/search.db81ec45.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.db81ec45.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="/prefect-ray/assets/javascripts/bundle.4b2c34cd.min.js"></script>
+      <script src="../assets/javascripts/bundle.4b2c34cd.min.js"></script>
       
     
   </body>
