@@ -292,3 +292,22 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
                 process.submit(42)
 
         my_flow()
+
+    def test_dependencies(self):
+        @task
+        def a():
+            time.sleep(self.get_sleep_time())
+
+        b = c = d = e = a
+
+        @flow(task_runner=RayTaskRunner())
+        def flow_with_dependent_tasks():
+            for _ in range(3):
+                a_future = a.submit(wait_for=[])
+                b_future = b.submit(wait_for=[a_future])
+
+                c.submit(wait_for=[b_future])
+                d.submit(wait_for=[b_future])
+                e.submit(wait_for=[b_future])
+
+        flow_with_dependent_tasks()
