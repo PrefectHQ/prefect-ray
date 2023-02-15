@@ -25,7 +25,7 @@ Released on Februrary 15th, 2023
 
 ### Fixed
 
-- Resolve Ray Futures Decentralized & Concurrently - [#69](https://github.com/PrefectHQ/prefect-ray/pull/69)
+- Reduce pressure on networking by resolving Ray/Prefect futures concurrently and decentralized right before executing the Prefect Task. - [#69](https://github.com/PrefectHQ/prefect-ray/pull/69)
 
 ## 0.2.2
 
