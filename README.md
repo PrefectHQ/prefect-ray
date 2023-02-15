@@ -19,10 +19,11 @@
 </p>
 
 ## Welcome!
+Visit the full docs [here](https://PrefectHQ.github.io/prefect-ray) to see additional examples and the API reference.
 
-Prefect integrations with the [Ray](https://www.ray.io/) execution framework, a flexible distributed computing framework for Python.
+`prefect-ray` contains Prefect integrations with the [Ray](https://www.ray.io/) execution framework, a flexible distributed computing framework for Python.
 
-Provides a `RayTaskRunner` that enables flows to run tasks requiring parallel execution using Ray.
+Provides a `RayTaskRunner` that enables Prefect flows to run tasks execute tasks in parallel using Ray.
 
 ## Getting Started
 
@@ -224,19 +225,26 @@ If you encounter and bugs while using `prefect-ray`, feel free to open an issue 
 
 If you have any questions or issues while using `prefect-ray`, you can find help in either the [Prefect Discourse forum](https://discourse.prefect.io/) or the [Prefect Slack community](https://prefect.io/slack).
 
-Feel free to ⭐️ or watch [`prefect-ray`](https://github.com/PrefectHQ/prefect-ray) for updates too!
+Feel free to star or watch [`prefect-ray`](https://github.com/PrefectHQ/prefect-ray) for updates too!
 
 ## Development
 
-If you'd like to install a version of `prefect-ray` for development, clone the repository and perform an editable install with `pip`:
+### Contributing
 
-```bash
-git clone https://github.com/PrefectHQ/prefect-ray.git
+If you'd like to help contribute to fix an issue or add a feature to `prefect-ray`, please [propose changes through a pull request from a fork of the repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
-cd prefect-ray/
-
-pip install -e ".[dev]"
-
-# Install linting pre-commit hooks
-pre-commit install
+1. [Fork the repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository)
+2. [Clone the forked repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository)
+3. Install the repository and its dependencies:
 ```
+ pip install -e ".[dev]"
+
+```
+4. Make desired changes
+5. Add tests
+6. Insert an entry to [CHANGELOG.md](https://github.com/PrefectHQ/prefect-ray/blob/main/CHANGELOG.md)
+7. Install `pre-commit` to perform quality checks prior to commit:
+```
+ pre-commit install
+ ```
+8. `git commit`, `git push`, and create a pull request
