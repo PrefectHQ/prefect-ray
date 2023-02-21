@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.2.4
+
+Released on February 21st, 2023.
+
+### Fixed
+
+- Updated `prefect.orion` imports to `prefect.server` - [#72](https://github.com/PrefectHQ/prefect-ray/pull/72)
+
 ## 0.2.3
 
 Released on Februrary 15th, 2023
