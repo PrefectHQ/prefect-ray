@@ -33,7 +33,7 @@ Requires an installation of Python 3.7+.
 
 We recommend using a Python virtual environment manager such as pipenv, conda, or virtualenv.
 
-These tasks are designed to work with Prefect 2.0. For more information about how to use Prefect, please refer to the [Prefect documentation](https://orion-docs.prefect.io/).
+These tasks are designed to work with Prefect 2.0. For more information about how to use Prefect, please refer to the [Prefect documentation](https://docs.prefect.io/).
 
 ### Installation
 
@@ -52,7 +52,7 @@ Click [here](https://docs.ray.io/en/master/ray-overview/installation.html#m1-mac
 
 ## Running tasks on Ray
 
-The `RayTaskRunner` is a [Prefect task runner](https://orion-docs.prefect.io/concepts/task-runners/) that submits tasks to [Ray](https://www.ray.io/) for parallel execution. 
+The `RayTaskRunner` is a [Prefect task runner](https://docs.prefect.io/concepts/task-runners/) that submits tasks to [Ray](https://www.ray.io/) for parallel execution. 
 
 By default, a temporary Ray instance is created for the duration of the flow run.
 
