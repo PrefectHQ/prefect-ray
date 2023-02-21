@@ -25,7 +25,7 @@ Released on February 21st, 2023.
 
 ### Fixed
 
-- Updated `prefect.orion` imports to `prefect.server` - [#72](https://github.com/PrefectHQ/prefect-dask/pull/72)
+- Updated `prefect.orion` imports to `prefect.server` - [#72](https://github.com/PrefectHQ/prefect-ray/pull/72)
 
 ## 0.2.3
 
