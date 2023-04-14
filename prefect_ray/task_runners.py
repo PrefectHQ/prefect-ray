@@ -145,7 +145,9 @@ class RayTaskRunner(BaseTaskRunner):
                 "The task runner must be started before submitting work."
             )
 
-        call_kwargs, upstream_ray_obj_refs = self._exchange_prefect_for_ray_futures(call.keywords)
+        call_kwargs, upstream_ray_obj_refs = self._exchange_prefect_for_ray_futures(
+            call.keywords
+        )
 
         remote_options = RemoteOptionsContext.get().current_remote_options
         # Ray does not support the submission of async functions and we must create a
@@ -263,4 +265,3 @@ class RayTaskRunner(BaseTaskRunner):
         Retrieve the ray object reference corresponding to a prefect future.
         """
         return self._ray_refs[key]
-
