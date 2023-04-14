@@ -145,7 +145,7 @@ class RayTaskRunner(BaseTaskRunner):
                 "The task runner must be started before submitting work."
             )
 
-        call_kwargs = self._exchange_prefect_for_ray_futures(call.keywords)
+        call_kwargs, upstream_ray_obj_refs = self._exchange_prefect_for_ray_futures(call.keywords)
 
         remote_options = RemoteOptionsContext.get().current_remote_options
         # Ray does not support the submission of async functions and we must create a
@@ -154,18 +154,22 @@ class RayTaskRunner(BaseTaskRunner):
             ray_decorator = ray.remote(**remote_options)
         else:
             ray_decorator = ray.remote
+
         self._ray_refs[key] = ray_decorator(self._run_prefect_task).remote(
-            sync_compatible(call.func), **call_kwargs
+            sync_compatible(call.func), *upstream_ray_obj_refs, **call_kwargs
         )
 
     def _exchange_prefect_for_ray_futures(self, kwargs_prefect_futures):
         """Exchanges Prefect futures for Ray futures."""
+
+        upstream_ray_obj_refs = []
 
         def exchange_prefect_for_ray_future(expr):
             """Exchanges Prefect future for Ray future."""
             if isinstance(expr, PrefectFuture):
                 ray_future = self._ray_refs.get(expr.key)
                 if ray_future is not None:
+                    upstream_ray_obj_refs.append(ray_future)
                     return ray_future
             return expr
 
@@ -175,7 +179,7 @@ class RayTaskRunner(BaseTaskRunner):
             return_data=True,
         )
 
-        return kwargs_ray_futures
+        return kwargs_ray_futures, upstream_ray_obj_refs
 
     @staticmethod
     def _run_prefect_task(func, *args, **kwargs):
@@ -189,7 +193,7 @@ class RayTaskRunner(BaseTaskRunner):
 
         kwargs = visit_collection(kwargs, visit_fn=resolve_ray_future, return_data=True)
 
-        return func(*args, **kwargs)
+        return func(**kwargs)
 
     async def wait(self, key: UUID, timeout: float = None) -> Optional[State]:
         ref = self._get_ray_ref(key)
@@ -259,3 +263,4 @@ class RayTaskRunner(BaseTaskRunner):
         Retrieve the ray object reference corresponding to a prefect future.
         """
         return self._ray_refs[key]
+
