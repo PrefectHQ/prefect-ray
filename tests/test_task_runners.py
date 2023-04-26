@@ -14,10 +14,10 @@ import ray
 import ray.cluster_utils
 from prefect import flow, get_run_logger, task
 from prefect.states import State
-from prefect.testing.fixtures import (
+from prefect.testing.fixtures import (  # noqa: F401
     hosted_api_server,
     use_hosted_api_server,
-)  # noqa: F401
+)
 from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
 from prefect.testing.utilities import exceptions_equal
 from ray.exceptions import TaskCancelledError
