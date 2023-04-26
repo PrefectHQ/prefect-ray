@@ -131,6 +131,9 @@ class RayTaskRunner(BaseTaskRunner):
 
         super().__init__()
 
+    def duplicate(self):
+        return type(self)(address=self.address, init_kwargs=self.init_kwargs)
+
     @property
     def concurrency_type(self) -> TaskConcurrencyType:
         return TaskConcurrencyType.PARALLEL
