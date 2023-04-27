@@ -14,7 +14,10 @@ import ray
 import ray.cluster_utils
 from prefect import flow, get_run_logger, task
 from prefect.states import State
-from prefect.testing.fixtures import hosted_orion_api, use_hosted_orion  # noqa: F401
+from prefect.testing.fixtures import (  # noqa: F401
+    hosted_api_server,
+    use_hosted_api_server,
+)
 from prefect.testing.standard_test_suites import TaskRunnerStandardTestSuite
 from prefect.testing.utilities import exceptions_equal
 from ray.exceptions import TaskCancelledError
@@ -70,7 +73,7 @@ def machine_ray_instance():
     """
     subprocess.check_call(
         ["ray", "start", "--head", "--include-dashboard", "False"],
-        cwd=str(prefect.__root_path__),
+        cwd=str(prefect.__development_base_path__),
     )
     try:
         yield "ray://127.0.0.1:10001"
@@ -91,7 +94,7 @@ def default_ray_task_runner():
 
 @pytest.fixture
 def ray_task_runner_with_existing_cluster(
-    machine_ray_instance, use_hosted_orion, hosted_orion_api  # noqa: F811
+    machine_ray_instance, use_hosted_api_server, hosted_api_server  # noqa: F811
 ):
     """
     Generate a ray task runner that's connected to a ray instance running in a separate
@@ -126,7 +129,7 @@ def inprocess_ray_cluster():
 
 @pytest.fixture
 def ray_task_runner_with_inprocess_cluster(
-    inprocess_ray_cluster, use_hosted_orion, hosted_orion_api  # noqa: F811
+    inprocess_ray_cluster, use_hosted_api_server, hosted_api_server  # noqa: F811
 ):
     """
     Generate a ray task runner that's connected to an in-process cluster.
@@ -148,7 +151,7 @@ def ray_task_runner_with_inprocess_cluster(
 
 @pytest.fixture
 def ray_task_runner_with_temporary_cluster(
-    use_hosted_orion, hosted_orion_api  # noqa: F811
+    use_hosted_api_server, hosted_api_server  # noqa: F811
 ):
     """
     Generate a ray task runner that creates a temporary cluster.
@@ -225,7 +228,6 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
     async def test_exception_to_crashed_state_in_flow_run(
         self, exceptions, task_runner, monkeypatch
     ):
-
         (raised_exception, state_exception_type) = exceptions
 
         async def throws_exception_before_task_begins(
