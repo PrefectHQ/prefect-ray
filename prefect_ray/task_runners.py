@@ -184,8 +184,14 @@ class RayTaskRunner(BaseTaskRunner):
         return kwargs_ray_futures, upstream_ray_obj_refs
 
     @staticmethod
-    def _run_prefect_task(func, *args, **kwargs):
-        """Resolves Ray futures before calling the actual Prefect task function."""
+    def _run_prefect_task(func, *upstream_ray_obj_refs, **kwargs):
+        """Resolves Ray futures before calling the actual Prefect task function.
+
+        Passing upstream_ray_obj_refs directly as args enables Ray to wait for
+        upstream tasks before running this remote function.
+        This variable is otherwise unused as the ray object refs are also
+        contained in kwargs.
+        """
 
         def resolve_ray_future(expr):
             """Resolves Ray future."""
