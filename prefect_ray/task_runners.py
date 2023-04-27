@@ -131,9 +131,15 @@ class RayTaskRunner(BaseTaskRunner):
         super().__init__()
 
     def duplicate(self):
+        """
+        Return a new instance of with the same settings as this one.
+        """
         return type(self)(address=self.address, init_kwargs=self.init_kwargs)
 
     def __eq__(self, other: object) -> bool:
+        """
+        Check if an instance has the same settings as this task runner.
+        """
         if type(self) == type(other):
             return (
                 self.address == other.address and self.init_kwargs == other.init_kwargs
