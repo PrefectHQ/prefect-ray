@@ -73,7 +73,7 @@ def machine_ray_instance():
     """
     subprocess.check_call(
         ["ray", "start", "--head", "--include-dashboard", "False"],
-        cwd=str(prefect.__root_path__),
+        cwd=str(prefect.__development_base_path__),
     )
     try:
         yield "ray://127.0.0.1:10001"
