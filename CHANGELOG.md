@@ -19,6 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.2.5
+
+Released on April 27th, 2023.
+
+### Added
+
+- `RayTaskRunner.duplicate` to support using the `RayTaskRunner` in concurrent flow runs - [#83](https://github.com/PrefectHQ/prefect-ray/pull/83)
+
+### Fixed
+
+- Wait for upstream object refs before starting tasks to avoid prematurely spinning up Ray workers - [#81](https://github.com/PrefectHQ/prefect-ray/pull/81)
+
 ## 0.2.4
 
 Released on February 21st, 2023.
