@@ -124,7 +124,6 @@ class RayTaskRunner(BaseTaskRunner):
         self.init_kwargs = init_kwargs.copy() if init_kwargs else {}
 
         self.init_kwargs.setdefault("namespace", "prefect")
-        self.init_kwargs
 
         # Runtime attributes
         self._ray_refs: Dict[str, "ray.ObjectRef"] = {}
@@ -133,6 +132,14 @@ class RayTaskRunner(BaseTaskRunner):
 
     def duplicate(self):
         return type(self)(address=self.address, init_kwargs=self.init_kwargs)
+
+    def __eq__(self, other: object) -> bool:
+        if type(self) == type(other):
+            return (
+                self.address == other.address and self.init_kwargs == other.init_kwargs
+            )
+        else:
+            return NotImplemented
 
     @property
     def concurrency_type(self) -> TaskConcurrencyType:
