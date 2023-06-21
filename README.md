@@ -7,7 +7,7 @@
         <img alt="PyPI" src="https://img.shields.io/pypi/v/prefect-ray?color=0052FF&labelColor=090422"></a>
     <a href="https://github.com/PrefectHQ/prefect-ray/" alt="Stars">
         <img src="https://img.shields.io/github/stars/PrefectHQ/prefect-ray?color=0052FF&labelColor=090422" /></a>
-    <a href="https://pepy.tech/badge/prefect-ray/" alt="Downloads">
+    <a href="https://pypistats.org/packages/prefect-ray/" alt="Downloads">
         <img src="https://img.shields.io/pypi/dm/prefect-ray?color=0052FF&labelColor=090422" /></a>
     <a href="https://github.com/PrefectHQ/prefect-ray/pulse" alt="Activity">
         <img src="https://img.shields.io/github/commit-activity/m/PrefectHQ/prefect-ray?color=0052FF&labelColor=090422" /></a>

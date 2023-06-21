@@ -1,0 +1,17 @@
+diff a/mkdocs.yml b/mkdocs.yml	(rejected hunks)
+@@ -4,6 +4,7 @@ repo_url: https://github.com/PrefectHQ/prefect-ray
+ edit_uri: edit/main/docs/
+ theme:
+   name: material
++  custom_dir: docs/overrides
+   favicon: img/favicon.ico
+   palette:
+     - media: "(prefers-color-scheme)"
+@@ -100,6 +101,6 @@ extra:
+         - icon: fontawesome/brands/python
+           link: https://pypi.org/project/prefect/
+     analytics:
+-        provider: google
++        provider: custom
+         property: G-8CSMBCQDKN
+ 
