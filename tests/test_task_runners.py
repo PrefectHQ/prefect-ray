@@ -72,7 +72,16 @@ def machine_ray_instance():
     Starts a ray instance for the current machine
     """
     subprocess.check_call(
-        ["ray", "start", "--head", "--include-dashboard", "False"],
+        [
+            "ray",
+            "start",
+            "--head",
+            "--include-dashboard",
+            "False",
+            "--port",
+            "0",  # chooses an unused port on the machine
+            "--disable-usage-stats",  # prevents an interactive prompt at startup
+        ],
         cwd=str(prefect.__development_base_path__),
     )
     try:
