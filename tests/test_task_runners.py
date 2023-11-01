@@ -313,3 +313,12 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
                 e.submit(wait_for=[b_future])
 
         flow_with_dependent_tasks()
+
+    def test_sync_task_timeout(self, task_runner):
+        """
+        This test is inherited from the prefect testing module and it may not appropriately 
+        skip on Windows. Here we skip it explicitly.
+        """
+        if sys.platform.startswith("win"):
+            pytest.skip("cancellation due to timeouts is not supported on Windows")
+        super().test_async_task_timeout(task_runner)
