@@ -13,7 +13,8 @@ import pytest
 import ray
 import ray.cluster_utils
 from prefect import flow, get_run_logger, task
-from prefect.states import State
+from prefect.states import State, StateType
+from prefect.tasks import TaskRun
 from prefect.testing.fixtures import (  # noqa: F401
     hosted_api_server,
     use_hosted_api_server,
@@ -322,3 +323,28 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         if sys.platform.startswith("win"):
             pytest.skip("cancellation due to timeouts is not supported on Windows")
         super().test_async_task_timeout(task_runner)
+
+    async def test_submit_and_wait(self, task_runner):
+        """
+        This test is inherited from the prefect testing module. The key difference
+        here is that task_runner is waiting longer than 5 seconds.
+        """
+        MAX_WAIT_TIME = 60
+
+        task_run = TaskRun(flow_run_id=uuid4(), task_key="foo", dynamic_key="bar")
+
+        async def fake_orchestrate_task_run(example_kwarg):
+            return State(
+                type=StateType.COMPLETED,
+                data=example_kwarg,
+            )
+
+        async with task_runner.start():
+            await task_runner.submit(
+                key=task_run.id,
+                call=partial(fake_orchestrate_task_run, example_kwarg=1),
+            )
+            state = await task_runner.wait(task_run.id, MAX_WAIT_TIME)
+            assert state is not None, "wait timed out"
+            assert isinstance(state, State), "wait should return a state"
+            assert await state.result() == 1
