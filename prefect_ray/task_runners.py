@@ -173,31 +173,10 @@ class RayTaskRunner(BaseTaskRunner):
         else:
             ray_decorator = ray.remote
 
-        def _run_prefect_task(func, *upstream_ray_obj_refs, **kwargs):
-            """Resolves Ray futures before calling the actual Prefect task function.
-
-            Passing upstream_ray_obj_refs directly as args enables Ray to wait for
-            upstream tasks before running this remote function.
-            This variable is otherwise unused as the ray object refs are also
-            contained in kwargs.
-            """
-
-            def resolve_ray_future(expr):
-                """Resolves Ray future."""
-                if isinstance(expr, ray.ObjectRef):
-                    return ray.get(expr)
-                return expr
-
-            kwargs = visit_collection(
-                kwargs, visit_fn=resolve_ray_future, return_data=True
-            )
-
-            return func(**kwargs)
-
-        _run_prefect_task.__qualname__ = call.keywords["task_run"].name
-
-        self._ray_refs[key] = ray_decorator(_run_prefect_task).remote(
-            sync_compatible(call.func), *upstream_ray_obj_refs, **call_kwargs
+        self._ray_refs[key] = (
+            ray_decorator(self._run_prefect_task)
+            .options(name=call.keywords["task_run"].name)
+            .remote(sync_compatible(call.func), *upstream_ray_obj_refs, **call_kwargs)
         )
 
     def _exchange_prefect_for_ray_futures(self, kwargs_prefect_futures):
@@ -221,6 +200,26 @@ class RayTaskRunner(BaseTaskRunner):
         )
 
         return kwargs_ray_futures, upstream_ray_obj_refs
+
+    @staticmethod
+    def _run_prefect_task(func, *upstream_ray_obj_refs, **kwargs):
+        """Resolves Ray futures before calling the actual Prefect task function.
+
+        Passing upstream_ray_obj_refs directly as args enables Ray to wait for
+        upstream tasks before running this remote function.
+        This variable is otherwise unused as the ray object refs are also
+        contained in kwargs.
+        """
+
+        def resolve_ray_future(expr):
+            """Resolves Ray future."""
+            if isinstance(expr, ray.ObjectRef):
+                return ray.get(expr)
+            return expr
+
+        kwargs = visit_collection(kwargs, visit_fn=resolve_ray_future, return_data=True)
+
+        return func(**kwargs)
 
     async def wait(self, key: UUID, timeout: float = None) -> Optional[State]:
         ref = self._get_ray_ref(key)
