@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+## 0.2.6
+
+Released on 
+
+### Added
+
+- Use prefect task name as remote function name.
 
 ## 0.2.5
 
