@@ -25,7 +25,7 @@ Released on November 27th, 2023.
 
 ### Added
 
-- Support Python 3.10
+- Support for Python 3.10
 
 ## 0.2.5
 
