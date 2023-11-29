@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.2.6
+
+Released on November 29th, 2023.
+
+### Added
+
+- Support for Python 3.10 - [#105](https://github.com/PrefectHQ/prefect-ray/pull/105)
+
 ## 0.2.5
 
 Released on April 27th, 2023.

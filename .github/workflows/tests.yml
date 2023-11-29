@@ -11,9 +11,7 @@ jobs:
         python-version:
           - "3.8"
           - "3.9"
-          # temporarily remove because Ray doesn't support yet
-          # https://github.com/ray-project/ray/issues/19116
-          # - "3.10"
+          - "3.10"
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
