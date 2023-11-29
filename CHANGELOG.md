@@ -25,7 +25,7 @@ Released on November 29th, 2023.
 
 ### Added
 
-- Support for Python 3.10
+- Support for Python 3.10 - [#105](https://github.com/PrefectHQ/prefect-ray/pull/105)
 
 ## 0.2.5
 
