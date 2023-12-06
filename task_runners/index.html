@@ -847,7 +847,9 @@ Examples:
 <span class="normal">286</span>
 <span class="normal">287</span>
 <span class="normal">288</span>
-<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RayTaskRunner</span><span class="p">(</span><span class="n">BaseTaskRunner</span><span class="p">):</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RayTaskRunner</span><span class="p">(</span><span class="n">BaseTaskRunner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A parallel task_runner that submits tasks to `ray`.</span>
 <span class="sd">    By default, a temporary Ray cluster is created for the duration of the flow run.</span>
@@ -932,8 +934,10 @@ Examples:
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ray_decorator</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ray_refs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ray_decorator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_prefect_task</span><span class="p">)</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span>
-            <span class="n">sync_compatible</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">func</span><span class="p">),</span> <span class="o">*</span><span class="n">upstream_ray_obj_refs</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ray_refs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ray_decorator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_prefect_task</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="s2">&quot;task_run&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">sync_compatible</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">func</span><span class="p">),</span> <span class="o">*</span><span class="n">upstream_ray_obj_refs</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_exchange_prefect_for_ray_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_prefect_futures</span><span class="p">):</span>
