@@ -43,11 +43,7 @@ Install `prefect-ray` with `pip`:
 pip install prefect-ray
 ```
 
-Users running Apple Silicon (such as M1 macs) will need to additionally run:
-```
-pip uninstall grpcio
-conda install grpcio
-```
+Users running Apple Silicon (such as M1 macs) will need to install ray in a miniforge conda environment.
 Click [here](https://docs.ray.io/en/master/ray-overview/installation.html#m1-mac-apple-silicon-support) for more details.
 
 ## Running tasks on Ray
@@ -130,10 +126,6 @@ def my_flow():
 Note that Ray Client uses the [ray://](https://docs.ray.io/en/master/cluster/ray-client.html) URI to indicate the address of a Ray instance. If you don't provide the `address` of a Ray instance, Prefect creates a temporary instance automatically.
 
 !!! warning "Ray environment limitations"
-    While we're excited about adding support for parallel task execution via Ray to Prefect, there are some inherent limitations with Ray you should be aware of:
-    
-    Ray currently does not support Python 3.10.
-
     Ray support for non-x86/64 architectures such as ARM/M1 processors with installation from `pip` alone and will be skipped during installation of Prefect. It is possible to manually install the blocking component with `conda`. See the [Ray documentation](https://docs.ray.io/en/latest/ray-overview/installation.html#m1-mac-apple-silicon-support) for instructions.
 
     See the [Ray installation documentation](https://docs.ray.io/en/latest/ray-overview/installation.html) for further compatibility information.
