@@ -173,8 +173,10 @@ class RayTaskRunner(BaseTaskRunner):
         else:
             ray_decorator = ray.remote
 
-        self._ray_refs[key] = ray_decorator(self._run_prefect_task).remote(
-            sync_compatible(call.func), *upstream_ray_obj_refs, **call_kwargs
+        self._ray_refs[key] = (
+            ray_decorator(self._run_prefect_task)
+            .options(name=call.keywords["task_run"].name)
+            .remote(sync_compatible(call.func), *upstream_ray_obj_refs, **call_kwargs)
         )
 
     def _exchange_prefect_for_ray_futures(self, kwargs_prefect_futures):

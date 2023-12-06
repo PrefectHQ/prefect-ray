@@ -203,18 +203,20 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         lack of re-raise here than the equality of the exception.
         """
 
-        async def fake_orchestrate_task_run():
+        async def fake_orchestrate_task_run(task_run):
             raise exception
 
-        test_key = uuid4()
+        task_run = TaskRun(
+            flow_run_id=uuid4(), task_key=str(uuid4()), dynamic_key="bar"
+        )
 
         async with task_runner.start():
             await task_runner.submit(
-                call=partial(fake_orchestrate_task_run),
-                key=test_key,
+                call=partial(fake_orchestrate_task_run, task_run=task_run),
+                key=task_run.id,
             )
 
-            state = await task_runner.wait(test_key, 5)
+            state = await task_runner.wait(task_run.id, 5)
             assert state is not None, "wait timed out"
             assert isinstance(state, State), "wait should return a state"
             assert state.name == "Crashed"
@@ -333,7 +335,7 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
 
         task_run = TaskRun(flow_run_id=uuid4(), task_key="foo", dynamic_key="bar")
 
-        async def fake_orchestrate_task_run(example_kwarg):
+        async def fake_orchestrate_task_run(example_kwarg, task_run):
             return State(
                 type=StateType.COMPLETED,
                 data=example_kwarg,
@@ -342,7 +344,9 @@ class TestRayTaskRunner(TaskRunnerStandardTestSuite):
         async with task_runner.start():
             await task_runner.submit(
                 key=task_run.id,
-                call=partial(fake_orchestrate_task_run, example_kwarg=1),
+                call=partial(
+                    fake_orchestrate_task_run, task_run=task_run, example_kwarg=1
+                ),
             )
             state = await task_runner.wait(task_run.id, MAX_WAIT_TIME)
             assert state is not None, "wait timed out"
