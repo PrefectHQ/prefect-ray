@@ -18,13 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
-## 0.2.6
 
-Released on 
+## 0.3.3
+
+Released on December 6th, 2023.
 
 ### Added
 
-- Use prefect task name as remote function name.
+- Use perfect task name as Ray remote function name - [#103](https://github.com/PrefectHQ/prefect-ray/pull/103)
 
 ## 0.2.5
 
