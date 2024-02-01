@@ -4,18 +4,16 @@
     <!--- Insert a cover image here -->
     <!--- <br> -->
     <a href="https://pypi.python.org/pypi/prefect-ray/" alt="PyPI version">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/prefect-ray?color=0052FF&labelColor=090422"></a>
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/prefect-ray?color=26272B&labelColor=090422"></a>
     <a href="https://github.com/PrefectHQ/prefect-ray/" alt="Stars">
-        <img src="https://img.shields.io/github/stars/PrefectHQ/prefect-ray?color=0052FF&labelColor=090422" /></a>
+        <img src="https://img.shields.io/github/stars/PrefectHQ/prefect-ray?color=26272B&labelColor=090422" /></a>
     <a href="https://pepy.tech/badge/prefect-ray/" alt="Downloads">
-        <img src="https://img.shields.io/pypi/dm/prefect-ray?color=0052FF&labelColor=090422" /></a>
+        <img src="https://img.shields.io/pypi/dm/prefect-ray?color=26272B&labelColor=090422" /></a>
     <a href="https://github.com/PrefectHQ/prefect-ray/pulse" alt="Activity">
-        <img src="https://img.shields.io/github/commit-activity/m/PrefectHQ/prefect-ray?color=0052FF&labelColor=090422" /></a>
+        <img src="https://img.shields.io/github/commit-activity/m/PrefectHQ/prefect-ray?color=26272B&labelColor=090422" /></a>
     <br>
     <a href="https://prefect-community.slack.com" alt="Slack">
-        <img src="https://img.shields.io/badge/slack-join_community-red.svg?color=0052FF&labelColor=090422&logo=slack" /></a>
-    <a href="https://discourse.prefect.io/" alt="Discourse">
-        <img src="https://img.shields.io/badge/discourse-browse_forum-red.svg?color=0052FF&labelColor=090422&logo=discourse" /></a>
+        <img src="https://img.shields.io/badge/slack-join_community-red.svg?color=26272B&labelColor=0904222&logo=slack" /></a>
 </p>
 
 ## Welcome!
@@ -29,7 +27,7 @@ Provides a `RayTaskRunner` that enables Prefect flows to run tasks execute tasks
 
 ### Python setup
 
-Requires an installation of Python 3.7+.
+Requires an installation of Python 3.8 or newer.
 
 We recommend using a Python virtual environment manager such as pipenv, conda, or virtualenv.
 
@@ -136,7 +134,7 @@ When using the `RayTaskRunner` with a remote Ray cluster, you may run into issue
 
 1. By default, Prefect will not persist any data to the filesystem of the remote ray worker. However, if you want to take advantage of Prefect's caching ability, you will need to configure a remote result storage to persist results across task runs. 
 
-We recommend using the [Prefect UI to configure a storage block](https://docs.prefect.io/ui/blocks/) to use for remote results storage.
+We recommend using the [Prefect UI to configure a storage block](https://docs.prefect.io/concepts/blocks/) to use for remote results storage.
 
 Here's an example of a flow that uses caching and remote result storage:
 ```python
@@ -178,7 +176,7 @@ if __name__ == "__main__":
 pip install prefect
 ```
 
-3. If you get an error with a message similar to "File system created with scheme 's3' could not be created", ensure the required Python modules are installed on **both local and remote machines**. The required prerequisite modules can be found in the [Prefect documentation](https://docs.prefect.io/tutorials/storage/#prerequisites). For example, if using S3 for the remote storage:
+3. If you get an error with a message similar to "File system created with scheme 's3' could not be created", ensure the required Python modules are installed on **both local and remote machines**. The required prerequisite modules can be found in the [Prefect documentation](https://docs.prefect.io/guides/deployment/storage-guide). For example, if using S3 for the remote storage:
 ```bash
 pip install s3fs
 ```
@@ -215,9 +213,9 @@ def my_flow():
 
 If you encounter and bugs while using `prefect-ray`, feel free to open an issue in the [prefect-ray](https://github.com/PrefectHQ/prefect-ray) repository.
 
-If you have any questions or issues while using `prefect-ray`, you can find help in either the [Prefect Discourse forum](https://discourse.prefect.io/) or the [Prefect Slack community](https://prefect.io/slack).
+If you have any questions or issues while using `prefect-ray`, you can find help in the [Prefect Slack community](https://prefect.io/slack).
 
-Feel free to star or watch [`prefect-ray`](https://github.com/PrefectHQ/prefect-ray) for updates too!
+Feel free to star or watch [`prefect-ray`](https://github.com/PrefectHQ/prefect-ray) for updates, too!
 
 ## Development
 
