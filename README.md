@@ -1,3 +1,8 @@
+> [!NOTE]
+> Active development of this project has moved within PrefectHQ/prefect. The code can be found [here](https://github.com/PrefectHQ/prefect/tree/main/src/integrations/prefect-ray) and documentation [here](https://docs.prefect.io/latest/integrations/prefect-ray).
+> Please open issues and PRs against PrefectHQ/prefect instead of this repository.
+
+
 # prefect-ray
 
 <p align="center">
