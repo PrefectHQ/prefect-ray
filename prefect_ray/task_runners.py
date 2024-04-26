@@ -78,7 +78,7 @@ from uuid import UUID
 import anyio
 import ray
 from prefect.futures import PrefectFuture
-from prefect.server.schemas.states import State
+from prefect.client.schemas.objects import State
 from prefect.states import exception_to_crashed_state
 from prefect.task_runners import BaseTaskRunner, R, TaskConcurrencyType
 from prefect.utilities.asyncutils import sync_compatible
