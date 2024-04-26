@@ -140,7 +140,9 @@ Note that Ray Client uses the [ray://](https://docs.ray.io/en/master/cluster/ray
 
 ## Running tasks on a Ray remote cluster
 
-When using the `RayTaskRunner` with a remote Ray cluster, you may run into issues that are not seen when using a local Ray instance. To resolve these issues, it is necessary to configure prefect remote result storage.
+When using the `RayTaskRunner` with a remote Ray cluster, you may encounter issues not seen when using a local Ray instance. To resolve these issues, we strongly recommend taking the following steps when working with a remote Ray cluster:
+
+1. Configure remote result storage to [persist results](https://docs.prefect.io/latest/concepts/results/?h=results#persisting-results) across task runs.
 
 We recommend using the [Prefect UI to configure a storage block](https://docs.prefect.io/ui/blocks/) to use for remote results storage.
 
